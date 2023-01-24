@@ -1,0 +1,40 @@
+[27-Aug-2022 10:29:55 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/CouponSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/CouponSeeder.php on line 7
+[27-Aug-2022 10:29:57 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/ClientsTableSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/ClientsTableSeeder.php on line 8
+[27-Aug-2022 10:29:57 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/ClientsTableSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/ClientsTableSeeder.php on line 8
+[27-Aug-2022 10:30:02 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/BlogSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/BlogSeeder.php on line 7
+[27-Aug-2022 10:30:02 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/BlogSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/BlogSeeder.php on line 7
+[27-Aug-2022 10:30:03 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/CountyTableSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/CountyTableSeeder.php on line 7
+[27-Aug-2022 10:30:05 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/CountyTableSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/CountyTableSeeder.php on line 7
+[27-Aug-2022 10:30:22 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/CountyTableSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/CountyTableSeeder.php on line 7
+[27-Aug-2022 10:30:22 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/BlogSeeder.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/BlogSeeder.php on line 7
+[27-Aug-2022 10:30:50 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Database\Seeder' not found in /home/cp49261/my.markazimarket.com/database/seeders/ClientsTableSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/database/seeders/ClientsTableSeeder.php on line 8

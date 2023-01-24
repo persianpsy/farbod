@@ -1,0 +1,4 @@
+[13-Nov-2022 10:54:03 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/i3zit6ltayqj/api.persianpsychology.com/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/i3zit6ltayqj/api.persianpsychology.com/config/app.php on line 16

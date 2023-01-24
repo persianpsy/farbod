@@ -1,0 +1,4 @@
+[27-Aug-2022 10:29:04 Asia/Tehran] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Application' not found in /home/cp49261/my.markazimarket.com/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/cp49261/my.markazimarket.com/bootstrap/app.php on line 14

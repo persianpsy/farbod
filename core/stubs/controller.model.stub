@@ -1,0 +1,95 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Repositories\Repository;
+
+class {{ class }} extends Controller
+{
+    protected $model;
+    public function __construct({{ model }} ${{ modelVariable }})
+    {
+        $this->model =  new Repository(${{ modelVariable }});
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function index(Request $request,{{ model }} ${{ modelVariable }} = null)
+    {
+        $conditions = array();
+        if (${{ modelVariable }})
+            $conditions['id'] = ${{ modelVariable }}->id;
+
+        if ($request->conditions)
+            $conditions = json_decode($request->conditions,true);
+
+        $model = $this->model;
+        if ($conditions)
+            $model = $this->model->list($conditions);
+
+        if ($request->with)
+            $model = $model->with($request->with);
+
+        if ($conditions || $request->with){
+            if ($request->noPaginate){
+                return $model->get();
+            }
+            return $model->paginate();
+        }
+        if ($request->noPaginate){
+            return $this->model->all();
+        }else{
+            return $this->model->paginate();
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        return $this->model->create($request->only($this->model->getModel()->fillable));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return $this->model->show(${{ modelVariable }});
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, {{ model }} ${{ modelVariable }})
+    {
+        return $this->model->update($request->only($this->model->getModel()->fillable), ${{ modelVariable }});
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        return $this->model->delete(${{ modelVariable }});
+    }
+}
