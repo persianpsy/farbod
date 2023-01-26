@@ -48,14 +48,14 @@ use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 */
 //test
 Route::get('/a', function() {
-    dd('hi api');
-    if (cache()->has('staff.all4')) {
 
-          $users =cache()->get('staff.all4');
-          dd('hi2');
-            // return $this->handleResponse(fractal($users->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
-
-        }
+//    if (cache()->has('staff.all4')) {
+//
+//          $users =cache()->get('staff.all4');
+//          dd('hi2');
+//            // return $this->handleResponse(fractal($users->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
+//
+//    }
 
 
          $data = Staff::with('user','category_staff','category_staff.category');
@@ -63,8 +63,8 @@ Route::get('/a', function() {
         // {
         //     $data->where('id',$request->staff_id);
         // }
-        cache()->put('staff.all4',$data->get());
-        dd($data);
+//        cache()->put('staff.all4',$data->get());
+        dd($data->first());
         // return $this->handleResponse(fractal($data->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
 
 // dd(bigbluebutton()->all());
