@@ -48,7 +48,7 @@ use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 */
 //test
 Route::get('/a', function() {
-dd('hi');
+//dd('hi');
 //    if (cache()->has('staff.all4')) {
 //
 //          $users =cache()->get('staff.all4');

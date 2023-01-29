@@ -25,3 +25,11 @@ Route::get('/clear-cache', function() {
     Artisan::call('config:cache');
     // return what you want
 });
+
+Route::get('/linkstorage', function ()
+{
+
+
+  Artisan::call('storage:link');
+
+});
