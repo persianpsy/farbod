@@ -10,6 +10,7 @@ use App\Http\Requests\IndexAppointmentUserRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Staff;
+use App\Http\Traits\SmsTrait;
 // use App\Repositories\Repository;
 use Carbon\Carbon;
 use App\Models\User;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 
 class FreeMeetingController extends BaseController
 {
+    use SmsTrait;
     // protected $model;
     // public function __construct(freeMeeting $freeMeeting)
     // {
@@ -90,6 +92,7 @@ class FreeMeetingController extends BaseController
         $store->save();
 
         Appointment::where('id',$request->id)->update(['status' => 2]);
+        $res = $this->SendAuthCode('00989335192412','requests','رایگان');
         return $this->handleResponse([],'ok!');
     }
 
