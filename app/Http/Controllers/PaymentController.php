@@ -39,7 +39,7 @@ class PaymentController extends BaseController
      */
      public function indexAdmin(Request $request){
          $model = $this->model;
-                
+
             $model = $model->with('user');
             $model->orderBy('created_at', 'DESC');
             return fractal(Payment::with('user')->orderBy('created_at', 'DESC')->get(), new PaymentAdminTransformer())->transform();
@@ -58,7 +58,7 @@ class PaymentController extends BaseController
         if (isset($user)){
             $conditions['user_id'] = $user->id;
         }
-        
+
     }
 
     /**
@@ -88,14 +88,14 @@ class PaymentController extends BaseController
         return false ;
         return $this->model->show($payment);
     }
-    
+
       public function sendReceipt(Request $request)
     {
         $pay = Payment::query()->where('token',$request->route('token'))->first();
-    
+
         if($pay)
         {
-            
+
              $info = array([
                 
                  "body" => "Welcome to our website! Your Receipt:".$pay->ref_id." A different experience in counseling from all around the worold",
@@ -222,10 +222,10 @@ class PaymentController extends BaseController
                 $reservation->appointment->save();
                 $reservation->save();
                  $res = $this->SendAuthCode($reservation->user->cellphone,'final',$reservation->appointment->date,$reservation->appointment->time);
-                 
-                $wallet->amount = (int) $wallet->amount - (int)  $payment->price ;
-                $wallet->save(); 
-              
+
+                $wallet->amount = (int) $wallet->amount - (int)  $reservation->price ;
+                $wallet->save();
+
                }else {
                
                    
