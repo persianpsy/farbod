@@ -30,47 +30,47 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-                
+
        Log::info('time.', ['res' => 'time']);
        $id=[];
         $data =  Reservation::with('appointment','user','staff','staff.user')->whereIn('status',[2])->whereHas('appointment',function ($q) use($id) {
-              $q->where('date' ,'=',\verta()->formatDate())->whereBetween ('time',[\verta()->subMinutes(15)->format('H:i'),\verta()->addMinutes(15)->format('H:i')]);
-            
-            })->get();
-            
+              $q->where('date' ,'=',\verta()->formatDate())->whereBetween ('time',[\verta()->subMinutes(30)->format('H:i'),\verta()->addMinutes(30)->format('H:i')]);
+
+        })->get();
+
         foreach ($data as $title) {
-           
-   //       $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
-     //       $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
-            
+
+          $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+            $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+
                  Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
                  Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
 
         }
-            
-     
-       
-        })->everyMinute();
-        
+
+
+
+        })->hourly();
+
            $schedule->call(function () {
-                
-     
+
+
         $id=[];
         $data2 =  Reservation::with('appointment','user','staff','staff.user')->whereIn('status',[2])->whereHas('appointment',function ($q) use($id) {
               $q->where('date' ,'=',\verta()->formatDate());
             })->get();
-            
+
         foreach ($data2 as $title) {
-           
-         //   $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
-       //     $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
-            
+
+            $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+            $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+
                  Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
                  Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
         }
-            
-     
-       
+
+
+
         })->daily();
     }
 
