@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FreeMeeting;
+use App\Models\Reservation;
 // use App\Repositories\Repository;
 use Illuminate\Http\Request;
 use App\Classes\AppointmentStatus;
@@ -31,8 +31,8 @@ class FreeMeetingController extends BaseController
     public function index(Request $request)
     {
         $user_id = Staff::query()->where('user_id',28)->first()->id;
-            
-      
+
+
         $time =  \verta()->startMonth();
         $appointment = DB::table('appointments')
             ->where('deleted_at',null)
@@ -41,12 +41,12 @@ class FreeMeetingController extends BaseController
             ->where('staff_id',$user_id)
             ->where('status',AppointmentStatus::ACTIVE)
         ;
-           
-                
+
+
         $meeting = $appointment->get(['time','date','id'])->toArray();
-        
-      
-        
+
+
+
         $res = [
             'appointment' => $meeting,
             't1'  =>  $time->today()->format('Y-m-d'),
@@ -54,9 +54,9 @@ class FreeMeetingController extends BaseController
             't3'  =>  $time->today()->addDays(2)->format('Y-m-d'),
             't4'  =>  $time->today()->addDays(3)->format('Y-m-d'),
             't5'  =>  $time->today()->addDays(4)->format('Y-m-d'),
-          
-     
-        
+
+
+
         ];
 
           return $this->handleResponse($res,'ok');
@@ -71,33 +71,34 @@ class FreeMeetingController extends BaseController
     public function store(Request $request)
     {
         $info = User::where('cellphone',$request->phone)->first();
-        
+
         if($info){
             return $this->handleError([],'user exist');
         }
-        
-        
+
+
         $user = new User();
         $user->email = $request->email;
         $user->cellphone = $request->phone;
         $user->save();
-        
-        
-        $store = new FreeMeeting();
+
+
+        $store = new Reservation();
         $store->appointment_id = $request->id;
         $store->user_id = $user->id;
+        $store->price = 0;
         $store->save();
-        
+
         Appointment::where('id',$request->id)->update(['status' => 2]);
         return $this->handleResponse([],'ok!');
     }
-    
+
      public function adminInfo(Request $request)
     {
         $info = FreeMeeting::with('user','appointment')->get();
-        
-    
-        
+
+
+
         return $this->handleResponse($info,'ok!');
     }
 
