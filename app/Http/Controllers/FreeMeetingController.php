@@ -89,6 +89,7 @@ class FreeMeetingController extends BaseController
         $store->appointment_id = $request->id;
         $store->user_id = $user->id;
         $store->price = 0;
+        $store->status = 2;
         $store->save();
 
         Appointment::where('id',$request->id)->update(['status' => 2]);
