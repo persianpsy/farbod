@@ -56,13 +56,13 @@ class ReservationController extends BaseController
     
      public function adminInfo(Request $request)
     {
-        //  $model = $this->model;
+          $model = $this->model;
                 
-        //     $model = $model->with('appointment','user','staff','appointment.staff');
-        //     $model->orderBy('created_at', 'DESC');
-        //     return $model->paginate();
-        
-        return \App\Models\Reservation::with('appointment','user','staff')->get();
+             $model = $model->with('appointment','user','staff','appointment.staff');
+             $model->orderBy('created_at', 'DESC');
+             return $model->paginate();
+//        return ['data'=>$model->paginate(),'total'=>$model->count()];
+//        return \App\Models\Reservation::with('appointment','user','staff')->get();
          
     
  
