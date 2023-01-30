@@ -40,8 +40,8 @@ class Kernel extends ConsoleKernel
             
         foreach ($data as $title) {
            
-            $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
-            $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+   //       $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+     //       $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
             
                  Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
                  Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
@@ -62,8 +62,8 @@ class Kernel extends ConsoleKernel
             
         foreach ($data2 as $title) {
            
-            $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
-            $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+         //   $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
+       //     $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
             
                  Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
                  Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
