@@ -42,7 +42,7 @@ class PaymentController extends BaseController
 
             $model = $model->with('user');
             $model->orderBy('created_at', 'DESC');
-            return Payment::with('user')->orderBy('created_at', 'DESC')->pagiante(15) ; 
+            return Payment::with('user')->orderBy('created_at', 'DESC')->get()->pagiante(15) ; 
 //            return , new PaymentAdminTransformer())->transform();
 
      }
