@@ -51,21 +51,21 @@ class ReservationController extends BaseController
               $q->where('staff_id' ,$id);
             })->get();
 
- 
+
     }
-    
+
      public function adminInfo(Request $request)
     {
         //  $model = $this->model;
-                
+
         //     $model = $model->with('appointment','user','staff','appointment.staff');
         //     $model->orderBy('created_at', 'DESC');
         //     return $model->paginate();
-        
-        return \App\Models\Reservation::with('appointment','user','staff')->get();
-         
-    
- 
+
+        return \App\Models\Reservation::with('appointment','user','staff')->pagiante(30);
+
+
+
     }
 
 
@@ -76,7 +76,7 @@ class ReservationController extends BaseController
               $q->where('user_id' ,$request->user()->id);
             })->get();
 
- 
+
     }
     /**
      * Store a newly created resource in storage.
@@ -94,20 +94,20 @@ class ReservationController extends BaseController
 
         $appointment = Appointment::where('id',$request->appointment_id)->with('staff')->firstOrFail();
 
-      
-        
+
+
         if($request->dollar)
         {
-            
+
             $amount = $appointment->staff->cost_dollar;
-         
+
         } else {
               if (!$appointment->staff->cost_toman) {
               return $this->handleError([],'not ok for staff!');
              }
              $amount = $appointment->staff->cost_toman;
         }
-       
+
         $data = [
             'wallet_id'      =>  $wallet->id,
             'user_id'        =>  $request->user()->id,
@@ -116,20 +116,20 @@ class ReservationController extends BaseController
             'price'          =>  (int)$amount,
              'status'         =>  ReservationStatus::CREATED
         ];
-      
+
         $model = $this->model->create($data);
 
-        
+
         if($request->dollar)
         {
-          
+
                           if ($appointment->staff->cost_dollar>$wallet->amount) {
             return $this->handleError('not ok for wallet!',['id'=>$model->id,'price' => (int)$appointment->staff->cost_dollar - (int)$wallet->amount ]);
                           }
                            $wallet->update([
             'amount' => (int)$wallet->amount - (int)$appointment->staff->cost_dollar
         ]);
-                          
+
         } else {
                   if ($appointment->staff->cost_toman>$wallet->amount) {
             return $this->handleError('not ok for wallet!',['id'=>$model->id,'price' => (int)$appointment->staff->cost_toman - (int)$wallet->amount ]);
@@ -137,27 +137,27 @@ class ReservationController extends BaseController
              $wallet->update([
             'amount' => (int)$wallet->amount - (int)$appointment->staff->cost_toman
         ]);
-          
+
         }
-      
+
          $appointment->update([
             'status' => AppointmentStatus::INACTIVE
         ]);
 
-        
+
         $model->status = ReservationStatus::PAID;
         $model->save();
-        
+
           $res = $this->SendAuthCode($wallet->user->cellphone,'final',$appointment->date,$appointment->time);
-         
-        
-        
+
+
+
          $staff = Staff::with('user')->where('id',$appointment->staff->id)->first();
-    
+
           $res_doctor = $this->SendAuthCode($staff->user->cellphone,'doctorreminder',$staff->user->last_name,$appointment->date,$appointment->time);
-       
-           
-        
+
+
+
         return $this->handleResponse([$res,$res_doctor],'okay reservation created');
 
     }
@@ -260,43 +260,43 @@ class ReservationController extends BaseController
     public function closest(Request $request)
     {
          $data =  Reservation::with(['appointment','user'])->where('appointment_id',$request->id)->first();
-     
+
         $data->status = ReservationStatus::FINISHED;
-        
-      
+
+
         ///  clean code ??!
         if($data->user->location == '1'){
-            
+
              $wallet = Wallet::where('user_id',$request->user()->id)
              ->where('currency','0')->first();
-           
-             
+
+
         } else {
-            
+
              $wallet = Wallet::where('user_id',$request->user()->id)
              ->where('currency','1')->first();
-             
+
         }
-            
-        
+
+
         $wallet->amount = (int) $wallet->amount + ( (int) $data->price * ((int)$data->appointment->staff->commission)/100 );
-        
-       
-   
+
+
+
         $wallet->save();
-        
-       
+
+
         $data->save();
-        
+
         $res = $this->SendAuthCode($data->user->cellphone,'vote','کاربر');
-        
+
         return $this->handleResponse($wallet,'okay');
     }
 
 
     public function createRoom(Request $request,Appointment $appointment)
     {
-     
+
         $reservation = Reservation::with('appointment')->where(['appointment_id'=>$request->id,'status'=>2])->first();
 
         $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
@@ -321,13 +321,13 @@ class ReservationController extends BaseController
         $reservation->status = 4 ;
 
         $reservation->Save();
-        
+
         return response(['msg'=>'اتاق با موفقیت ایجاد شد.','room_id'=>$content->result]);
     }
-    
+
         public function createMeetingRoom(Request $request,Appointment $appointment)
     {
-        
+
           $reservation = Reservation::with('appointment.staff.user')->where(['appointment_id'=>$request->id,'status'=>2])->first();
           $room =  \Bigbluebutton::create([
                 'meetingID' => $reservation->appointment_id,
@@ -340,66 +340,66 @@ class ReservationController extends BaseController
                     ['link' => 'https://persianpsychology.com/p2.pdf', 'fileName' => 'p2.pdf']
                 ],
             ]);
-            
-            
+
+
             $join = Bigbluebutton::join([
                     'meetingID' => $reservation->appointment_id,
                     'userName' => 'Doctor',
                     'password' => $reservation->appointment->staff->user->cellphone ,
-                    
+
                  ]);
-                     
-                      
+
+
 
             $reservation->meeting_id = $reservation->appointment_id ;
              $reservation->room_id = null;
              $reservation->status = '4';
             $reservation->save();
-         
+
         return $join ;
-        
+
     }
-    
+
     public function cleanRoom(Request $request)
     {
           $reservation = Reservation::where('id' , $request->id)->first();
-         
+
             if($reservation->room_id){
                $reservation->room_id = NULL;
             }
             if( $reservation->meeting_id){
               $reservation->meeting_id = NULL;
             }
-            
+
             $reservation->status = '2';
-            
+
             $reservation->update();
-            
+
             return $reservation;
-        
+
     }
-    
+
            public function joinMeetingRoom(Request $request,Appointment $appointment)
     {
-        
+
           $reservation = Reservation::with('appointment.staff.user')->where(['appointment_id'=>$appointment->id,'status'=>2])->first();
-        
-            
+
+
             $join = Bigbluebutton::join([
                     'meetingID' => $reservation->appointment_id,
                     'userName' => 'client'.rand(2,200),
-                    'password' => $reservation->appointment->staff->user->cellphone 
+                    'password' => $reservation->appointment->staff->user->cellphone
                  ]);
-                     
-                      
+
+
 
             $reservation->meeting_id = $reservation->appointment_id ;
              $reservation->room_id = null;
                $reservation->status = '4';
             $reservation->save();
-         
+
         return $join ;
-        
+
     }
 
     public function getRoom(Request $request)
@@ -414,13 +414,13 @@ class ReservationController extends BaseController
         if (!$user)
             return response()->json(['کاربر مشخص نشده است'],400);
 
-    
+
 
         $reservation =  Reservation::with('appointment.staff.user')->where('id',$request->id)->whereIn('status',[4,5])->first();
-        
+
         if(isset($reservation->meeting_id)){
-            
-            
+
+
             \Bigbluebutton::create([
                 'meetingID' => $reservation->appointment_id,
                 'meetingName' =>  $reservation->appointment_id,
@@ -432,11 +432,11 @@ class ReservationController extends BaseController
                     ['link' => 'https://persianpsychology.com/p2.pdf', 'fileName' => 'p2.pdf']
                 ],
             ]);
-             
+
             $join = Bigbluebutton::join([
                     'meetingID' => $reservation->appointment_id,
                     'userName' => 'client'.rand(2,200),
-                    'password' => $reservation->appointment->staff->user->cellphone 
+                    'password' => $reservation->appointment->staff->user->cellphone
                  ]);
              return response(['msg'=>'آدرس اتصال با موف جلسه شخصی قیت ایجاد شد.','url'=>$join,'mode'=>'psy']);
         }
@@ -466,7 +466,7 @@ class ReservationController extends BaseController
 
         return response(['msg'=>'آدرس اتصال با موفقیت ایجاد شد.','url'=>$content->result,'mode'=>'skyroom']);
     }
-    
+
         public function joinDirectRoom(Request $request)
     {
         $user = Auth::guard('api')->user();
@@ -475,11 +475,11 @@ class ReservationController extends BaseController
 
 
         $reservation =  Reservation::where('room_id',$request->room_id)->whereIn('status',[4,5])->first();
-       
+
         $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
         $client = new \GuzzleHttp\Client();
         $name = 'guest';
-        
+
         $response = $client->request('POST', $url, ['json' => [
                 "action"=> "createLoginUrl",
                 "params"=>[
@@ -508,20 +508,20 @@ class ReservationController extends BaseController
             return response('مشاور انتخاب نشده است با پشتیبان تماس بگیرید',419);
 
         $reservation =  Reservation::where('appointment_id',$appointment->id)->first();
-        
+
         $reservation->like = $request->like;
         $reservation->comment = $request->comment;
         $reservation->save();
-        
-    
-        
+
+
+
         $appointment->staff->rating = ($appointment->staff->rating+(int)$request->like)/2;
-      
+
           $appointment->staff->update();
-        
+
           return $appointment->staff;
          return $this->handleResponse([$reservation,$appointment],'okay');
-        
+
     }
     public function info(getInfoReservationRequest $request)
     {
@@ -530,12 +530,12 @@ class ReservationController extends BaseController
             ->whereIn('status', [ReservationStatus::PAID,ReservationStatus::CREATEDROOM,
             ReservationStatus::JOINEDROOM,  ReservationStatus::FINISHED])
             ->get();
-            
-         
-        
+
+
+
         if ($data !== null)
         {
-        
+
             return $this->handleResponse(fractal($data, new ReservationInfoTransformer())->transform(),'reservation found!');
         } else {
 

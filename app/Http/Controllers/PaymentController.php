@@ -42,7 +42,8 @@ class PaymentController extends BaseController
 
             $model = $model->with('user');
             $model->orderBy('created_at', 'DESC');
-            return fractal(Payment::with('user')->orderBy('created_at', 'DESC')->get(), new PaymentAdminTransformer())->transform();
+            return Payment::with('user')->orderBy('created_at', 'DESC')->pagiante(15) ; 
+//            return , new PaymentAdminTransformer())->transform();
 
      }
     public function index(Request $request,Payment $payment = null)
