@@ -121,7 +121,7 @@ class PaymentRepository extends BaseController
         curl_close($ch);
        
         if ($err) {
-            // echo "cURL Error #:" . $err;
+           return $result;
         } else {
             if (empty($result['errors'])) {
                 if ($result['data']['code'] == 100) {
