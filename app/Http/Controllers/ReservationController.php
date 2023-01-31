@@ -61,8 +61,7 @@ class ReservationController extends BaseController
         //     $model = $model->with('appointment','user','staff','appointment.staff');
         //     $model->orderBy('created_at', 'DESC');
         //     return $model->paginate();
-
-        return \App\Models\Reservation::with('appointment','user','staff')->get()->pagiante(30);
+        return \App\Models\Reservation::with('appointment','user','staff')->latest()->take(30)->get();
 
 
 
