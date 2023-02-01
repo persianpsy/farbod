@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function() {
+    activity()->log('Look, I logged something');
   dd('hi');
     // return what you want
 })->name('login');
