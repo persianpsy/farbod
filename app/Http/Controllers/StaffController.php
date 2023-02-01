@@ -172,8 +172,23 @@ class StaffController extends BaseController
     public function update(Request $request, Staff $staff)
     {
         $staffData = $request->only($this->model->getModel()->fillable);
-        $newStaff = $this->model->update($staffData,$staff);
-        return $newStaff;
+        $staff = Staff::with('user')->where('id',$request->id)->first();
+        $staff->degree = $request->degree;
+        $staff->en_degree = $request->en_degree;
+
+        $staff->description = $request->description;
+        $staff->en_description = $request->en_description;
+
+        $staff->experience = $request->experience;
+        $staff->en_experience = $request->en_experience;
+
+        $staff->aboutme = $request->aboutme;
+        $staff->en_aboutme = $request->en_aboutme;
+
+        $staff->save();
+
+        return $this->handleResponse( $staff,'updated doctor !');
+
     }
 
     /**
