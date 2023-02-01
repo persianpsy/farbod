@@ -38,11 +38,17 @@ class PaymentController extends BaseController
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
      public function indexAdmin(Request $request){
+
+         $model = $this->model;
+
+         $model = $model->with('user');
+         $model->orderBy('created_at', 'DESC');
+         return ['data'=>$model->paginate(),'total'=>$model->count()];
          $model = $this->model;
 
             $model = $model->with('user');
             $model->orderBy('created_at', 'DESC');
-            return Payment::with('user')->orderBy('created_at', 'DESC')->take(30)->get(); ; 
+            return Payment::with('user')->orderBy('created_at', 'DESC')->take(30)->get(); ;
 //            return , new PaymentAdminTransformer())->transform();
 
      }
@@ -98,19 +104,19 @@ class PaymentController extends BaseController
         {
 
              $info = array([
-                
+
                  "body" => "Welcome to our website! Your Receipt:".$pay->ref_id." A different experience in counseling from all around the worold",
                   "to" => array(["email" => $request->user()->email, "name" => 'client']),
                   "from" => ["email_address_id" => "23758", "name" => "Persian Pschology"],
                   "subject" => "Receipt from Persian Psychology"
-                
+
             ]);
-            
-          
-          
-          
+
+
+
+
             $curl = curl_init();
-            
+
             curl_setopt_array($curl, array(
               CURLOPT_URL => 'https://rest.clicksend.com/v3/email/send',
               CURLOPT_RETURNTRANSFER => true,
@@ -126,11 +132,11 @@ class PaymentController extends BaseController
                 'Authorization: Basic YmVoaTgwMEB5YWhvby5jb206QWJjZEAxMjM0NTY='
               ),
             ));
-            
+
             $res = curl_exec($curl);
-         
+
             curl_close($curl);
-            
+
             return $res;
         }
         return false ;
@@ -167,8 +173,8 @@ class PaymentController extends BaseController
 
         return (new \App\Repositories\PaymentRepository)->jsonPay($reservation_id);
     }
-    
-    
+
+
 
     public function request(Request $request)
     {
@@ -188,7 +194,7 @@ class PaymentController extends BaseController
         $data = array("merchant_id" => 'ebfe5aa5-a483-4614-85d3-ab608471254a', "authority" => $Authority, "amount" => $payment->price);
 
         $jsonData = json_encode($data);
-    
+
         $ch = curl_init('https://api.zarinpal.com/pg/v4/payment/verify.json');
         curl_setopt($ch, CURLOPT_USERAGENT, 'ZarinPal Rest Api v4');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -206,16 +212,16 @@ class PaymentController extends BaseController
 
         $reservation = Reservation::with('wallet','user')->where('payment_id',$payment->id)->first();
 
-        
+
        if (isset($result['data']['code']) &&  $result['data']['code']== 100) {
-           
+
                 $referenceId = $result['data']['ref_id'];
                 $payment->ref_id = $referenceId ;
                 $payment->status =  PaymentsStatus::SUCCESS ;
                 $payment->save();
                 $wallet = Wallet::where('user_id',$payment->user_id)->first();
                 $wallet->amount = (int) $wallet->amount + (int) $payment->price ;
-                $wallet->save(); 
+                $wallet->save();
 
               if($reservation){
                 $reservation->appointment->status = AppointmentStatus::INACTIVE;
@@ -228,8 +234,8 @@ class PaymentController extends BaseController
                 $wallet->save();
 
                }else {
-               
-                   
+
+
                }
            return \redirect()->away('https://panel.persianpsychology.com/receipt/'.$payment->token);
 
@@ -260,8 +266,8 @@ class PaymentController extends BaseController
 //        $payment = Payment::query()->where('user_id',$request->user()->id)->get();
 
     }
-    
-    public function export() 
+
+    public function export()
     {
         return Excel::download(new PaymentExport, 'payment.xlsx');
     }
