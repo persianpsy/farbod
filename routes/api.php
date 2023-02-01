@@ -169,6 +169,7 @@ Route::group(['namespace' => 'api','prefix'=>'v1','middleware'=>['auth:api','sco
     Route::get('payment/export', [PaymentController::class, 'export']);
     Route::post('doctors/create', [StaffController::class, 'store'])->name('doctors.store');
      Route::post('doctors/image', [StaffController::class, 'storeImage'])->name('doctors.store.image');
+    Route::get('staff/index', [StaffController::class, 'show'])->name('doctors.staff.show');
     Route::get('doctors/show/{user}', [UserController::class, 'showDoctors'])->name('doctors.show');
     Route::post('doctors/{user}/update', [UserController::class, 'updateDoctors'])->name('doctors.update');
     Route::delete('doctors/{user}/delete', [UserController::class, 'destroyDoctors'])->name('doctors.destroy');

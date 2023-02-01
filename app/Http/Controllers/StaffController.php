@@ -32,17 +32,17 @@ class StaffController extends BaseController
         $conditions = array();
         if ($staff)
             $conditions['id'] = $staff->id;
-    
+
         if ($request->conditions)
             $conditions = json_decode($request->conditions,true);
-    
+
         $model = $this->model;
         if ($conditions)
             $model = $this->model->list($conditions);
-    
+
         if ($request->with)
             $model = $model->with($request->with);
-    
+
         if ($conditions || $request->with){
             if ($request->noPaginate){
                 return $model->get();
@@ -50,11 +50,11 @@ class StaffController extends BaseController
             return $model->paginate();
         }
         if ($request->noPaginate){
-          
+
             return $this->model->all();
         }
-          
-      
+
+
     }
 
     /**
@@ -65,7 +65,7 @@ class StaffController extends BaseController
      */
     public function store(Request $request)
     {
-      
+
         $user = new User();
         $user->location   = 0;
         $user->first_name = $request->first_name;
@@ -73,10 +73,10 @@ class StaffController extends BaseController
         $user->en_first_name = $request->en_first_name;
         $user->en_last_name = $request->en_last_name;
         $user->cellphone = $request->cellphone;
-        
-        
+
+
         $user->save();
-        
+
         $staff = new Staff();
         $staff->cost_toman = $request->cost_toman;
         $staff->user_id = $user->id;
@@ -98,18 +98,18 @@ class StaffController extends BaseController
         $staff->rating = $request->rating;
         $staff->sheba = $request->sheba;
         $staff->save();
-        
-        
+
+
          $wallet = new Wallet();
          $wallet->user_id = $user->id;
          $wallet->currency ='0';
          $wallet->save();
-         
+
          $wallet2 = new Wallet();
          $wallet2->user_id = $user->id;
          $wallet2->currency ='1';
          $wallet2->save();
-         
+
         $res = $this->SendAuthCode($request->cellphone,'firstsms', explode(" ",  $request->last_name)[0]);
 
         // if ($request->category){
@@ -121,11 +121,11 @@ class StaffController extends BaseController
         //         ]);
         //     }
         // }
-        
+
 
         return $this->handleResponse(['id' => $staff->id,'res' => $res],'saved doctor !');
     }
-    
+
     public function storeImage(Request $request)
     {
         $staff = Staff::with('user')->latest()->first();
@@ -145,9 +145,9 @@ class StaffController extends BaseController
             $staff->cover     = env('APP_URL').'/public/storage/'.$path;
         }
         $staff->save();
-        
+
          return $this->handleResponse( $staff,'saved doctor !');
-        
+
     }
 
     /**
@@ -158,7 +158,8 @@ class StaffController extends BaseController
      */
     public function show(Staff $staff)
     {
-        return $this->model->show($staff);
+        $staff = Staff::with('user')->get();
+        return $this->handleResponse( $staff,'saved doctor !');
     }
 
     /**
