@@ -57,7 +57,7 @@ Route::get('/welcome', function(Request $request) {
         'device' => $agent->device(),
         'browser' => $agent->browser()
     ]);
-    dd($agent);
+    dd($agent['httpHeaders']);
     activity()->log($description);
     return 'welcome';
 });
