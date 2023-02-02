@@ -126,28 +126,23 @@ return [
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
-        // 'default' => [
-        //     'url' => 'redis://:Ug8yYVbeQWaBugal8IfaBDKr@arthur.iran.liara.ir:31641/0',
-        //     'host' => 'arthur.iran.liara.ir',
-        //     'password' => 'Ug8yYVbeQWaBugal8IfaBDKr',
-        //     'port' => '31641',
-        //     'database' => env('REDIS_DB', '0'),
-        // ],
+        'default' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_DB', '0'),
+        ],
 
-        // 'cache' => [
-        //     'url' => 'redis://:Ug8yYVbeQWaBugal8IfaBDKr@arthur.iran.liara.ir:31641/0',
-        //     'host' => 'arthur.iran.liara.ir',
-        //     'password' => 'Ug8yYVbeQWaBugal8IfaBDKr',
-        //     'port' => '31641',
-        //     'database' => env('REDIS_CACHE_DB', '1'),
-        // ],
-          'default' => [
-                'url' => 'redis://:Ug8yYVbeQWaBugal8IfaBDKr@arthur.iran.liara.ir:31641/0',
-            ],
-
-            'cache' => [
-                'url' => 'redis://:Ug8yYVbeQWaBugal8IfaBDKr@arthur.iran.liara.ir:31641/0',
-            ],
+        'cache' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_CACHE_DB', '1'),
+        ],
 
     ],
 
