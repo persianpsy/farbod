@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Redis;
 */
 
 Route::get('/', function(Request $request) {
-    dd('hi');
     $agent = new \Jenssegers\Agent\Agent;
     $description = serialize([
         'event' => 'Enter Api',
@@ -30,14 +29,6 @@ Route::get('/', function(Request $request) {
     ]);
     activity()->log($description);
 
-
-    dd($redis = Redis::connection());
-
-    $redis->set('user_details', json_encode([
-            'first_name' => 'Alex',
-            'last_name' => 'Richards'
-        ])
-    );
     return 'hi';
     // return what you want
 })->name('login');
