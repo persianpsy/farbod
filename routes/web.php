@@ -19,8 +19,9 @@ use Illuminate\Http\Request;
 Route::get('/', function(Request $request) {
     $description = serialize([
         'event' => 'Enter Api',
+        'input' => $request->ip()
     ]);
-    activity()->causedBy($request->ip())->log($description);
+    activity()->log($description);
  return 'hi';
     // return what you want
 })->name('login');
