@@ -28,14 +28,9 @@ Route::get('/', function(Request $request) {
         'browser' => $agent->browser()
     ]);
     activity()->log($description);
-    $redis = Redis::connection();
 
-    try{
-        $redis= Redis::connect('188.34.187.35',3306);
-        return response('redis working');
-    }catch(\Predis\Connection\ConnectionException $e){
-        return response('error connection redis');
-    }
+    $redis= Redis::connect('188.34.187.35',3306);
+
 
 
     $redis->set('user_details', json_encode([
