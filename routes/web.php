@@ -30,7 +30,6 @@ Route::get('/', function(Request $request) {
     activity()->log($description);
     $redis = Redis::connection();
 
-    dd($redis);
 
     $redis->set('user_details', json_encode([
             'first_name' => 'Alex',
