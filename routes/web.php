@@ -22,6 +22,7 @@ Route::get('/', function(Request $request) {
         'input' => $request->ip(),
         'header' => $request->header('user-agent')
     ]);
+    dd($request->header());
     activity()->log($description);
  return 'hi';
     // return what you want
