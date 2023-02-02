@@ -46,116 +46,29 @@ use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//test
-Route::get('/a', function() {
-//dd('hi');
-//    if (cache()->has('staff.all4')) {
-//
-//          $users =cache()->get('staff.all4');
-//          dd('hi2');
-//            // return $this->handleResponse(fractal($users->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
-//
-//    }
+//welcome
+Route::get('/welcome', function(Request $request) {
+    $agent = new \Jenssegers\Agent\Agent;
+    $description = serialize([
+        'event' => 'Enter site',
+        'input' => $request->ip(),
+        'header' => $request->header('user-agent'),
+        'robot'  => $agent->isRobot(),
+        'device' => $agent->device(),
+        'browser' => $agent->browser()
+    ]);
+    dd($agent);
+    activity()->log($description);
+    return 'welcome';
+});
 
-
-         $data = Staff::with('user','category_staff','category_staff.category');
-        // if($request->staff_id)
-        // {
-        //     $data->where('id',$request->staff_id);
-        // }
-//        cache()->put('staff.all4',$data->get());
-        dd($data->first());
-        // return $this->handleResponse(fractal($data->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
-
-// dd(bigbluebutton()->all());
-// $data = [
-//     'location'=>'IR',
-//     'full_name'=>'FARBOD',
-//       'request'=>\Request::ip()
-//     ];
-//     $id = [];
-// \Bigbluebutton::create([
-//     'meetingID' => 'tamku2',
-//     'meetingName' => 'test meeting2',
-//     'attendeePW' => 'attendee2',
-//     'moderatorPW' => 'moderator2'
-// ]);
-
-
-// dispatch(function () {
-//     $data = [
-//     'location'=>'IR',
-//     'full_name'=>'FARBOD',
-//       'request'=>\Request::ip()
-//     ];
-//       $mail =  Mail::to('partovi74@gmail.com')->send(new \App\Mail\completeReservation ($data));
-// });
-
-// dd('fff');
-// $url =  Bigbluebutton::join([
-//     'meetingID' => 'tamku',
-//     'userName' => 'disa',
-//     'password' => 'attendee' //which user role want to join set password here
-//  ]) ;
-
-//  return $url;
-
-
-// $agent = new Agent();
-// dd($agent->isDesktop());
-
-// $url = \Bigbluebutton::start([
-//     'meetingID' => 'tamku',
-//     'meetingName' => 'test meeting name',
-//     'moderatorPW' => 'moderator', //moderator password set here
-//     'attendeePW' => 'attendee', //attendee password here
-//     'userName' => 'John Deo',//for join meeting
-//     //'redirect' => false // only want to create and meeting and get join url then use this parameter
-// ]);
-
-// return $url;
-
-// return redirect()->to($url);
-
-// return redirect()->to(
-//  Bigbluebutton::join([
-//     'meetingID' => 'tamku2',
-//     'userName' => 'disa2',
-//     'password' => 'attendee2' //which user role want to join set password here
-//  ])
-// );
-
-//      $mail =  Mail::to('partovi74@gmail.com')->send(new \App\Mail\completeReservation ($data));
-
-    //  $curl = curl_init();
-
-// curl_setopt_array($curl, array(
-//   CURLOPT_URL => 'https://meeting.persianpsychology.com/bigbluebutton/api/join?fullName=User+1089162&meetingID=random-4160704&password=ww&redirect=false&checksum=b4a28ff1bffccad9915489bc0c797dcb6d6739ee',
-//   CURLOPT_RETURNTRANSFER => true,
-//   CURLOPT_ENCODING => '',
-//   CURLOPT_MAXREDIRS => 10,
-//   CURLOPT_TIMEOUT => 0,
-//   CURLOPT_FOLLOWLOCATION => true,
-//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//   CURLOPT_CUSTOMREQUEST => 'GET',
-// ));
-
-// $response = curl_exec($curl);
-
-// curl_close($curl);
-
-// return json_decode(json_encode(simplexml_load_string($response)))->url;
-
-    return 'api';
-})->middleware(['cors']);;
-
-
+//bbb
 Route::get('/bbb', function() {
 return bigbluebutton()->all();
 
 });
 
-  Route::get('free/meeting/index', [FreeMeetingController::class, 'adminInfo'])->name('admin.free.show');
+Route::get('free/meeting/index', [FreeMeetingController::class, 'adminInfo'])->name('admin.free.show');
 
 //admin token
 Route::group(['namespace' => 'api','prefix'=>'v1','middleware'=>['auth:api','scope:all-admin']], function () {
