@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redis;
 */
 
 Route::get('/', function(Request $request) {
+    dd('fff');
     $agent = new \Jenssegers\Agent\Agent;
     $description = serialize([
         'event' => 'Enter Api',
