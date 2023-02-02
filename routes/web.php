@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +28,11 @@ Route::get('/', function(Request $request) {
         'browser' => $agent->browser()
     ]);
     activity()->log($description);
-    \Cache::store('redis')->put('Laradock', 'Awesome', 100);
- return 'hi';
+
+
+    Redis::set('name', 'Taylor');
+
+    return 'hi';
     // return what you want
 })->name('login');
 
