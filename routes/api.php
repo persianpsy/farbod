@@ -54,10 +54,10 @@ Route::get('/welcome', function(Request $request) {
         'input' => $request->ip(),
         'header' => $request->header('user-agent'),
         'robot'  => $agent->isRobot(),
+        'url'    =>  $request->fullUrl(),
         'device' => $agent->device(),
         'browser' => $agent->browser()
     ]);
-    dd($agent->languages());
     activity()->log($description);
     return 'welcome';
 });
