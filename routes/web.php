@@ -27,6 +27,7 @@ Route::get('/', function(Request $request) {
         'browser' => $agent->browser()
     ]);
     activity()->log($description);
+    \Cache::store('redis')->put('Laradock', 'Awesome', 100);
  return 'hi';
     // return what you want
 })->name('login');
