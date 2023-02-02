@@ -30,6 +30,13 @@ Route::get('/', function(Request $request) {
     activity()->log($description);
     $redis = Redis::connection();
 
+    try{
+        $redis=Redis::connect('127.0.0.1',3306);
+        return response('redis working');
+    }catch(\Predis\Connection\ConnectionException $e){
+        return response('error connection redis');
+    }
+
 
     $redis->set('user_details', json_encode([
             'first_name' => 'Alex',
