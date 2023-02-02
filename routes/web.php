@@ -19,7 +19,8 @@ use Illuminate\Http\Request;
 Route::get('/', function(Request $request) {
     $description = serialize([
         'event' => 'Enter Api',
-        'input' => $request->ip()
+        'input' => $request->ip(),
+        'header' => $request->header('user-agent')
     ]);
     activity()->log($description);
  return 'hi';
