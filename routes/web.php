@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function() {
-    activity()->log('Look, I logged something');
-  dd('hi');
+Route::get('/', function(Request $request) {
+    $description = serialize([
+        'event' => 'Enter Api',
+    ]);
+    activity()->causedBy($request->ip())->log($description);
+ return 'hi';
     // return what you want
 })->name('login');
 
