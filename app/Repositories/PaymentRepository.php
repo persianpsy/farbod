@@ -70,14 +70,19 @@ class PaymentRepository extends BaseController
         }
     }
 
-    public function jsonPay($token,$via = 'zarinpal')
+    public function jsonPay($token,$via,$phone)
     {
         $payment = Payment::where('token',$token)->first();
 
         if (!$payment){
             return response()->json(['پرداخت شما نامعتبر است'],400);
         }
-
+        $description = serialize([
+            'event' => 'Enter Bank port ',
+            'phone' => $phone
+           
+        ]);
+        activity()->log($description);
         $url=route('payment.verify',[$payment->id]);
 
             //decharge wallet

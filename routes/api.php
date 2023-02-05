@@ -74,9 +74,9 @@ Route::get('free/meeting/index', [FreeMeetingController::class, 'adminInfo'])->n
 Route::group(['namespace' => 'api','prefix'=>'v1','middleware'=>['auth:api','scope:all-admin']], function () {
     Route::get('user/show', [UserController::class, 'show'])->name('user.show');
 
-    Route::post('user/add', [UserController::class, 'add'])->name('user.add');
- Route::get('admin/user/index/', [UserController::class, 'adminIndex'])->name('users.index.admin');
-
+  Route::post('user/add', [UserController::class, 'add'])->name('user.add');
+  Route::get('admin/user/index/', [UserController::class, 'adminIndex'])->name('users.index.admin');
+  Route::get('admin/log/index', [UserController::class, 'adminLog'])->name('log.index.admin');
   Route::post('admin/change/wallet', [UserController::class, 'changeWallet'])->name('users.change.wallet');
     Route::get('users/export', [UserController::class, 'export']);
     Route::get('payment/export', [PaymentController::class, 'export']);

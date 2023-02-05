@@ -78,7 +78,7 @@ class UserController extends BaseController
     {
         $data = \App\Models\User::with('wallet')
             ->where('id',$request->user()->id)->first();
-            
+
         if($data){
             $staff = \App\Models\Staff::where('user_id',$data->id)->first();
             if($staff){
@@ -89,7 +89,7 @@ class UserController extends BaseController
         } else {
             return $this->handleError([],' error shown user!');
         }
-       
+
     }
     public function preAuth(StoreUser $request)
     {
@@ -128,11 +128,11 @@ class UserController extends BaseController
         if($request->cellphone === '00989124484707' || $request->cellphone === '00989128175866' || $request->cellphone === '00989120647142' || $request->cellphone === '00989122721593' || $request->cellphone === '00989335192412')
         {
             return $this->userRepository->auth($request,'all-admin');
-            
+
         }else{
             return false;
         }
-          
+
     }
 
     public function authForDoctor (UserAuthRequest $request)
@@ -213,13 +213,21 @@ class UserController extends BaseController
 
     public function adminIndex(Request $request)
     {
-        
+
         $model = $this->model;
-            
+
         $model = $model->with('wallet');
         $model->orderBy('created_at', 'DESC');
         return ['data'=>$model->paginate(),'total'=>$model->count()];
-        
+
+    }
+    public function adminLog(Request $request)
+    {
+
+
+        return DB::table('log_activity')->orderBy('created_at', 'DESC')->get();
+
+
     }
     /**
      * Display a listing of the resource.
@@ -230,30 +238,30 @@ class UserController extends BaseController
      */
     public function indexDoctors(Request $request,Staff $user = null)
     {
-        
+
         if (cache()->has('staff.transform.final')) {
-         
+
           $users =cache()->get('staff.transform.final');
-          
-          return $users ; 
+
+          return $users ;
           return $this->handleResponse(fractal($users,new StaffInfoTransformer() )->transform(),'found Staff!');
-          
+
         }
-        
-        
+
+
          $data = Staff::with('user','category_staff','category_staff.category');
         // if($request->staff_id)
         // {
-            
+
         //     $data->where('id',$request->staff_id);
         //     cache()->put('staff.index',$data->get());
         // }
          $user = cache()->put('staff.transform.final',$this->handleResponse(fractal($data->get(),new StaffInfoTransformer() )->transform(),'final Staff!'));
-        
+
          return $user ;
-        
-        
-        
+
+
+
         // $data = Staff::with('user','category_staff','category_staff.category');
         // if($request->staff_id)
         // {
@@ -262,28 +270,28 @@ class UserController extends BaseController
         // return $this->handleResponse(fractal($data->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
 
     }
-    
+
       public function indexENDoctors(Request $request,Staff $user = null)
     {
-        
+
         if (cache()->has('staff.transform.en.final')) {
-         
+
           $users =cache()->get('staff.transform.en.final');
-          
-          return $users ; 
-        
-          
+
+          return $users ;
+
+
         }
-        
-        
+
+
          $data = Staff::with('user','category_staff','category_staff.category');
-       
+
          $user = cache()->put('staff.transform.en.final',$this->handleResponse(fractal($data->get(),new StaffENInfoTransformer() )->transform(),'final Staff!'));
-        
+
          return $user ;
-        
-        
-        
+
+
+
         // $data = Staff::with('user','category_staff','category_staff.category');
         // if($request->staff_id)
         // {
@@ -298,31 +306,31 @@ class UserController extends BaseController
         $name = explode("-", $request->name);
         $user_id = User::query()->where('en_first_name',$name[0])->where('en_last_name',$name[1])->first()->id;
             $data->where('user_id',$user_id);
-        
+
         return $this->handleResponse(fractal($data->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
 
     }
-    
-    
+
+
     public function changeWallet(Request $request)
     {
-    
+
         $payment = new Payment();
-        
+
         $payment->user_id = $request->user()->id;
         $payment->gateway = 'دستی';
         $payment->status = 2;
         $payment->price = $request->amount;
-        
+
         $payment->save();
-        
+
         $user = Wallet::query()->where('user_id',$request->user)->first();
-        
+
         $user->amount = $request->amount;
-        
+
         $user->save();
-        
-        
+
+
         return $this->handleResponse($user,'change wallet !');
 
     }
@@ -497,12 +505,12 @@ class UserController extends BaseController
         if ($user)
         {
             $err = 1 ;
-            
+
             if($user->email)
             {
                $err=$err+1 ;
             }
-            
+
 
 
 
@@ -517,13 +525,13 @@ class UserController extends BaseController
     {
         return Auth::guard('api')->check();
     }
-    
-     public function export() 
+
+     public function export()
     {
         return Excel::download(new UsersExport, 'users.xlsx');
     }
-    
-     public function add(Request $request) 
+
+     public function add(Request $request)
     {
       return $this->userRepository->joinUserAdmin($request);
     }

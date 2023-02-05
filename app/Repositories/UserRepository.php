@@ -52,7 +52,7 @@ class UserRepository extends BaseController implements ShouldQueue
     {
         $this->mediaRepository = $mediaRepository;
         $this->model = $user;
-    
+
     }
 
     private function issueToken(Request $request,$scope = 'personal-client')
@@ -85,22 +85,22 @@ class UserRepository extends BaseController implements ShouldQueue
         if (is_null($user)){
             return $this->handleError([],'auth.wrong');
         }
-        if($request->email){
-            $user->email = $request->email;
-        }
+//        if($request->email){
+//            $user->email = $request->email;
+//        }
         $code = $this->generateCode();
         $data = ['code' => $code];
-        
-     
-        if ($user->email){
-              $cellphone = $user->email;
-              $message = $data ;
-               $job = (new \App\Jobs\smsReminder($cellphone, $message));
-               dispatch($job);
-  
-                
-        }
-     
+
+//
+//        if ($user->email){
+//              $cellphone = $user->email;
+//              $message = $data ;
+//               $job = (new \App\Jobs\smsReminder($cellphone, $message));
+//               dispatch($job);
+//
+//
+//        }
+
         $res = true;
 
         $hashids = new Hashids();
@@ -111,25 +111,25 @@ class UserRepository extends BaseController implements ShouldQueue
         if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098')
         {
             $user->location = LocationStatus::OUT ; // NOT IR;
-            
+
             $info = array([
-                
+
             'messages' => array([
                  "content" => "OTP from persianpsychology  : ".$code,
                   "recipients" => [ $request->cellphone],
-                
+
                   "channel" => 'sms',
                     "msg_type" => "text",
                         "data_coding"=> "text"
-                
+
                 ])  ,
             "message_globals" => array([
                  "originator" => "SignOTP",
                  "report_url" => "https://the_url_to_recieve_delivery_report.com"])
             ]);
-            
-          
-           
+
+
+
           $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -148,14 +148,14 @@ class UserRepository extends BaseController implements ShouldQueue
                     'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoLWJhY2tlbmQ6YXBwIiwic3ViIjoiY2Y2MTQ4NjQtN2UwMC00NDlhLTgzMzEtYWZiNDZkNTA3NjZiIn0.xepRsG1yUm-K1JSs4yV8eHe-2APsyfW614q_M1q93LI'
                   ),
                 ));
-                
-                $response = curl_exec($curl);
-                
-                curl_close($curl);
-            
-   
 
-       
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+
+
+
+
         } else{
             $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
             $user->location = LocationStatus::IR ; //IR;
@@ -163,17 +163,27 @@ class UserRepository extends BaseController implements ShouldQueue
         if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
               $user->ip = $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
         }
-        
-        $agent = new Agent();
 
-        if($agent->isDesktop()){
-              $user->device = '1';
-        }else{
-              $user->device = '0';
-        }
-      
-      
+//        $agent = new Agent();
+
+//        if($agent->isDesktop()){
+//              $user->device = '1';
+//        }else{
+//              $user->device = '0';
+//        }
+
+
         $user->save();
+
+        $description = serialize([
+            'event'  => 'pre Login Api',
+            'input'  => $request->ip(),
+            'header' => $request->header('user-agent'),
+            'user'   => $user->cellphone,
+
+        ]);
+        
+        activity()->log($description);
 
         // if not ok  from kavenegar??
         return $this->handleResponse($res,'send otp');
@@ -181,7 +191,7 @@ class UserRepository extends BaseController implements ShouldQueue
     }
     public function preEmailAuth (Request $request)
     {
-        
+
         $user = User::query()->where('email',$request->email)->first();
 
         if (!$user){
@@ -190,31 +200,31 @@ class UserRepository extends BaseController implements ShouldQueue
 
         $code = $this->generateCode();
 
-       
+
         $res = true;
 
         $hashids = new Hashids();
-        
+
         $user->auth_code = $hashids->encode($code);
 
         if ($request->email)
         {
             $user->location = LocationStatus::OUT ; // NOT IR;
-            
+
             $info = array([
-                
-         
-                
+
+
+
                  "body" => "Welcome to our website! Your login/registration code:".$code." A different experience in counseling from all around the worold",
                   "to" => array(["email" => $request->email, "name" => 'client']),
                   "from" => ["email_address_id" => "23758", "name" => "Persian Pschology"],
                   "subject" => "OTP from Persian Psychology"
-                
+
             ]);
-           
-          
+
+
             $curl = curl_init();
-            
+
             curl_setopt_array($curl, array(
               CURLOPT_URL => 'https://rest.clicksend.com/v3/email/send',
               CURLOPT_RETURNTRANSFER => true,
@@ -230,14 +240,14 @@ class UserRepository extends BaseController implements ShouldQueue
                 'Authorization: Basic YmVoaTgwMEB5YWhvby5jb206QWJjZEAxMjM0NTY='
               ),
             ));
-            
+
             $res = curl_exec($curl);
             dd($res);
             curl_close($curl);
 
 
-       
-        } 
+
+        }
 
         $user->save();
 
@@ -250,23 +260,23 @@ class UserRepository extends BaseController implements ShouldQueue
 
         // user registration is Not Complete
         // check hash codes
-        
+
            $hashids = new Hashids();
-       
+
         if ($request->otp != $hashids->decode($staff->user->auth_code)[0])
         {
             return $this->handleError([],'wrong auth');
         }
 
-        
+
         // if ($staff->phone_verified_at = '0') {
         //     $user->phone_verified_at = '1';
         //     $user->save();
         // }
 
         $data = $this->issueToken($request,$scope);
-        
-         
+
+
          $staff->user->token = $data->accessToken ;
          $staff->user->save();
 
@@ -300,7 +310,7 @@ class UserRepository extends BaseController implements ShouldQueue
         $user = $this->findUserByCellphone($request->cellphone);
 
         if(!$user)
-        
+
             return $this->handleError([],'not found auth');
 
         $hashids = new Hashids();
@@ -315,7 +325,7 @@ class UserRepository extends BaseController implements ShouldQueue
          $token = $this->issueToken($request,$scope);
          $user->token = $token->accessToken ;
          $user->save();
-        
+
         if($user->email){
             $total  = true;
         } else {
@@ -329,22 +339,22 @@ class UserRepository extends BaseController implements ShouldQueue
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
                 'amount'   =>  1000000
-            ]); 
-            
+            ]);
+
              $res = $this->SendAuthCode($user->cellphone,'salam','کاربر');
             } else {
               Wallet::query()->insert([
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
                 'amount'   =>  5
-            ]);  
+            ]);
             }
-            
+
             $wallet = Wallet::query()->where('user_id',$user->id)->first();
 
 
 
-       
+
         return $this->handleResponse([
             'token' => $token->accessToken,'currency' =>  $wallet->currency , 'total' => $total
         ],'به پنل خوش آمدید ');
@@ -382,7 +392,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
 
 
-       
+
         return $this->handleResponse([
             'token' => $token->accessToken,'currency' =>  $wallet->currency
         ],'welcome auth!');
@@ -486,19 +496,19 @@ class UserRepository extends BaseController implements ShouldQueue
         if($request->en_last_name)
             $user->en_last_name = $request->en_last_name ;
         if($request->email){
-            $user->email = $request->email ; 
+            $user->email = $request->email ;
         }
         if($request->jobs){
-        $user->jobs = $request->jobs ; 
+        $user->jobs = $request->jobs ;
         }
         if($request->birthday){
-        $user->birthday = $request->birthday ; 
+        $user->birthday = $request->birthday ;
         }
         if($request->education){
-            $user->education = $request->education ; 
+            $user->education = $request->education ;
         }
         if($request->gender){
-            $user->gender = $request->gender ; 
+            $user->gender = $request->gender ;
         }
         if ($request->has('image')) {
             $destination_path ='/user/profile';
@@ -816,19 +826,19 @@ class UserRepository extends BaseController implements ShouldQueue
             'password' => ($request->newPassword) ? Hash::make($request->newPassword) : $user->password,
         ]);
     }
-    
-      public function joinUserAdmin(Request $request) 
+
+      public function joinUserAdmin(Request $request)
     {
       $user = new User();
       $user->cellphone = $request->cellphone;
-      
+
       $user->phone_verified_at = PhoneStatus::VERIFIED;
-    
+
       $token = $this->issueToken($request,'personal-client');
       $user->token = $token->accessToken ;
-       
+
       $user->save();
-      
+
       return $this->handleResponse($user,'shown user!');
     }
 }
