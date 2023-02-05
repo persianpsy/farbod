@@ -209,12 +209,12 @@ class PaymentController extends BaseController
         curl_close($ch);
         $result = json_decode($result, true);
         $reservation = Reservation::with('wallet','user','staff')->where('payment_id',$payment->id)->first();
-        $description = serialize([
+        $description = [
             'event' => 'verify Bank port ',
             'res'   => $result,
             'reservation' => $reservation
 
-        ]);
+        ];
         activity()->log($description);
 //        Log::info('verify payment.', ['payment response' => $result]);
 
