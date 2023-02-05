@@ -224,8 +224,29 @@ class UserController extends BaseController
     public function adminLog(Request $request)
     {
 
+        $restrictedList =  DB::table('activity_log')->orderBy('created_at', 'DESC')->get();
 
-        return DB::table('activity_log')->orderBy('created_at', 'DESC')->paginate(50);
+        if(count($restrictedList) > 0) {
+            $suspectedList = [];
+            foreach($restrictedList as $suspected_record) {
+
+                $user_ids = unserialize($suspected_record->description);
+
+                foreach($user_ids as $user_id) {
+                    $suspectedList[] = [
+                        'data'        => $user_id
+                    ];
+                }
+            }
+
+            return collect($suspectedList);
+            
+        } else {
+            return [] ;
+        }
+
+       
+    
 
 
     }
