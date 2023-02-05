@@ -19,14 +19,14 @@ use Illuminate\Support\Facades\Redis;
 
 Route::get('/', function(Request $request) {
     $agent = new \Jenssegers\Agent\Agent;
-    $description = serialize([
+    $description = [
         'event' => 'Enter Api',
         'input' => $request->ip(),
         'header' => $request->header('user-agent'),
         'robot'  => $agent->isRobot(),
         'device' => $agent->device(),
         'browser' => $agent->browser()
-    ]);
+    ];
     activity()->log($description);
     $redis = Redis::connection();
 
