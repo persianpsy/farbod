@@ -89,12 +89,13 @@ class FreeMeetingController extends BaseController
         $store->appointment_id = $request->id;
         $store->user_id = $user->id;
         $store->price = 0;
+        $store->staff_id = 23;
         $store->status = 2;
         $store->save();
 
         Appointment::where('id',$request->id)->update(['status' => 2]);
         $res = $this->SendAuthCode('00989335192412','requests','رایگان');
-        $res = $this->SendAuthCode($request->phone,'remember','انتخابی');
+        $res = $this->SendAuthCode($request->phone,'free',$request->date,$request->time);
         return $this->handleResponse([],'ok!');
     }
 

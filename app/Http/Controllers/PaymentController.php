@@ -237,7 +237,7 @@ class PaymentController extends BaseController
                 $reservation->appointment->save();
                 $reservation->save();
                  $res = $this->SendAuthCode($reservation->user->cellphone,'final',$reservation->appointment->date,$reservation->appointment->time);
-
+                 $res = $this->SendAuthCode($reservation->staff->user->cellphone,'doctors',$reservation->appointment->date,$reservation->appointment->time);
                 $wallet->amount = (int) $wallet->amount - (int)  $reservation->price ;
                 $wallet->save();
 
