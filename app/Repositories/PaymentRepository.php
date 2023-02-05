@@ -77,11 +77,11 @@ class PaymentRepository extends BaseController
         if (!$payment){
             return response()->json(['پرداخت شما نامعتبر است'],400);
         }
-        $description = [
+        $description = serialize([
             'event' => 'Enter Bank port ',
             'phone' => $phone
            
-        ];
+        ]);
         activity()->log($description);
         $url=route('payment.verify',[$payment->id]);
 
