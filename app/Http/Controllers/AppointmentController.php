@@ -91,6 +91,7 @@ class AppointmentController extends BaseController
             $appointment = DB::table('appointments')
                  ->where('deleted_at',null)
                 ->where('date','>=', \verta()->startMonth())
+                ->where('date','>',\verta()->now())
                  ->where('date','>',\verta()->yesterday()->formatDate())
                 ->where('date','<',\verta()->endMonth())
                 ->where('staff_id',$user_id)
@@ -322,6 +323,7 @@ class AppointmentController extends BaseController
             $appointment = Appointment::with('staff')
                 ->where('date','>=', \verta()->startMonth())
                 ->where('date','<',\verta()->endMonth())
+                ->where('date','>',\verta()->now())
                       ->where('status',AppointmentStatus::ACTIVE)
             
             ;
@@ -331,7 +333,8 @@ class AppointmentController extends BaseController
                 $selected = false;
                 if  (Appointment::query()
                     ->where('date','=', $start->format('Y-m-d'))
-                          ->where('status',AppointmentStatus::ACTIVE)
+                    ->where('date','>',\verta()->now())
+                    ->where('status',AppointmentStatus::ACTIVE)
                    ->first()
                     )
                 {
