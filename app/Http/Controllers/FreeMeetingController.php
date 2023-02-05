@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 // use App\Repositories\Repository;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Classes\AppointmentStatus;
 use App\Http\Requests\IndexAppointmentUserRequest;
@@ -92,6 +93,12 @@ class FreeMeetingController extends BaseController
         $store->staff_id = 23;
         $store->status = 2;
         $store->save();
+
+        Wallet::query()->insert([
+            'user_id'  =>  $user->id,
+            'currency' =>  1
+        ]);
+
 
         Appointment::where('id',$request->id)->update(['status' => 2]);
         $res = $this->SendAuthCode('00989335192412','requests','رایگان');

@@ -52,7 +52,7 @@ class UserRepository extends BaseController implements ShouldQueue
     {
         $this->mediaRepository = $mediaRepository;
         $this->model = $user;
-    
+
     }
 
     private function issueToken(Request $request,$scope = 'personal-client')
@@ -63,195 +63,108 @@ class UserRepository extends BaseController implements ShouldQueue
              $user = User::query()->where('email' ,$request->email)->first();
         }
 
-        //        if($grantType !== 'social'){
-//            $params['username'] = $request->cellphone;
-//            $params['password'] = ($request->otp)?$request->otp:$request->password;
-//        }
-//
-//        $request->request->add($params);
-//
-//        $proxy = Request::create('oauth/token', 'POST' , [$request]);
-//        $proxy->accepts(['text/html', 'application/json']);
-
 
 
         return $user->createToken('UserToken', [$scope]);
     }
+    public function sendOTP($user,$request){
 
-    public function preAuth(StoreUser $request)
-    {
-        $user = $this->firstOrNewUser($request);
-
-        if (is_null($user)){
-            return $this->handleError([],'auth.wrong');
-        }
-//        if($request->email){
-//            $user->email = $request->email;
-//        }
         $code = $this->generateCode();
-        $data = ['code' => $code];
-        
-//     
-//        if ($user->email){
-//              $cellphone = $user->email;
-//              $message = $data ;
-//               $job = (new \App\Jobs\smsReminder($cellphone, $message));
-//               dispatch($job);
-//  
-//                
-//        }
-     
-        $res = true;
 
         $hashids = new Hashids();
-
 
         $user->auth_code = $hashids->encode($code);
 
         if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098')
         {
             $user->location = LocationStatus::OUT ; // NOT IR;
-            
-            $info = array([
-                
-            'messages' => array([
-                 "content" => "OTP from persianpsychology  : ".$code,
-                  "recipients" => [ $request->cellphone],
-                
-                  "channel" => 'sms',
-                    "msg_type" => "text",
-                        "data_coding"=> "text"
-                
-                ])  ,
-            "message_globals" => array([
-                 "originator" => "SignOTP",
-                 "report_url" => "https://the_url_to_recieve_delivery_report.com"])
-            ]);
-            
-          
-           
-          $curl = curl_init();
 
-                curl_setopt_array($curl, array(
-                  CURLOPT_URL => 'https://api.d7networks.com/messages/v1/send',
-                  CURLOPT_RETURNTRANSFER => true,
-                  CURLOPT_ENCODING => '',
-                  CURLOPT_MAXREDIRS => 10,
-                  CURLOPT_TIMEOUT => 0,
-                  CURLOPT_FOLLOWLOCATION => true,
-                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                  CURLOPT_CUSTOMREQUEST => 'POST',
-                  CURLOPT_POSTFIELDS =>json_encode($info[0]),
-                  CURLOPT_HTTPHEADER => array(
+            $info = array([
+
+                'messages' => array([
+                    "content" => "OTP from persianpsychology  : ".$code,
+                    "recipients" => [ $request->cellphone],
+
+                    "channel" => 'sms',
+                    "msg_type" => "text",
+                    "data_coding"=> "text"
+
+                ])  ,
+                "message_globals" => array([
+                    "originator" => "SignOTP",
+                    "report_url" => "https://the_url_to_recieve_delivery_report.com"])
+            ]);
+
+
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.d7networks.com/messages/v1/send',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>json_encode($info[0]),
+                CURLOPT_HTTPHEADER => array(
                     'Content-Type: application/json',
                     'Accept: application/json',
                     'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoLWJhY2tlbmQ6YXBwIiwic3ViIjoiY2Y2MTQ4NjQtN2UwMC00NDlhLTgzMzEtYWZiNDZkNTA3NjZiIn0.xepRsG1yUm-K1JSs4yV8eHe-2APsyfW614q_M1q93LI'
-                  ),
-                ));
-                
-                $response = curl_exec($curl);
-                
-                curl_close($curl);
-            
-   
+                ),
+            ));
 
-       
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+
+
+
         } else{
             $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
             $user->location = LocationStatus::IR ; //IR;
         }
         if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-              $user->ip = $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+            $user->ip = $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
         }
-        
-//        $agent = new Agent();
 
-//        if($agent->isDesktop()){
-//              $user->device = '1';
-//        }else{
-//              $user->device = '0';
-//        }
-      
-      
+
         $user->save();
-        
+
         $description = serialize([
             'event'  => 'pre Login Api',
             'input'  => $request->ip(),
             'header' => $request->header('user-agent'),
             'user'   => $user->cellphone,
-           
+
         ]);
         activity()->log($description);
 
-        // if not ok  from kavenegar??
-        return $this->handleResponse($res,'send otp');
+        return $this->handleResponse([],'send otp');
+    }
+    public function preAuth(StoreUser $request)
+    {
+        $user = $this->firstOrNewUser($request);
 
+        if ($request->model = 'email' )
+        {
+            $this->emailAuth($request);
+        }
+
+        $this->sendOTP($user,$request);
     }
     public function preEmailAuth (Request $request)
     {
-        
+
         $user = User::query()->where('email',$request->email)->first();
 
         if (!$user){
             return $this->handleError([],'auth.wrong');
         }
 
-        $code = $this->generateCode();
-
-       
-        $res = true;
-
-        $hashids = new Hashids();
-        
-        $user->auth_code = $hashids->encode($code);
-
-        if ($request->email)
-        {
-            $user->location = LocationStatus::OUT ; // NOT IR;
-            
-            $info = array([
-                
-         
-                
-                 "body" => "Welcome to our website! Your login/registration code:".$code." A different experience in counseling from all around the worold",
-                  "to" => array(["email" => $request->email, "name" => 'client']),
-                  "from" => ["email_address_id" => "23758", "name" => "Persian Pschology"],
-                  "subject" => "OTP from Persian Psychology"
-                
-            ]);
-           
-          
-            $curl = curl_init();
-            
-            curl_setopt_array($curl, array(
-              CURLOPT_URL => 'https://rest.clicksend.com/v3/email/send',
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => '',
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 0,
-              CURLOPT_FOLLOWLOCATION => true,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => 'POST',
-              CURLOPT_POSTFIELDS => json_encode($info[0]),
-              CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Basic YmVoaTgwMEB5YWhvby5jb206QWJjZEAxMjM0NTY='
-              ),
-            ));
-            
-            $res = curl_exec($curl);
-            dd($res);
-            curl_close($curl);
-
-
-       
-        } 
-
-        $user->save();
-
-        // if not ok  from kavenegar??
-        return $this->handleResponse($res,'send otp');
 
     }
      public function authForDoctor($request, $staff,$scope)
@@ -259,23 +172,23 @@ class UserRepository extends BaseController implements ShouldQueue
 
         // user registration is Not Complete
         // check hash codes
-        
+
            $hashids = new Hashids();
-       
+
         if ($request->otp != $hashids->decode($staff->user->auth_code)[0])
         {
             return $this->handleError([],'wrong auth');
         }
 
-        
+
         // if ($staff->phone_verified_at = '0') {
         //     $user->phone_verified_at = '1';
         //     $user->save();
         // }
 
         $data = $this->issueToken($request,$scope);
-        
-         
+
+
          $staff->user->token = $data->accessToken ;
          $staff->user->save();
 
@@ -309,7 +222,7 @@ class UserRepository extends BaseController implements ShouldQueue
         $user = $this->findUserByCellphone($request->cellphone);
 
         if(!$user)
-        
+
             return $this->handleError([],'not found auth');
 
         $hashids = new Hashids();
@@ -324,7 +237,7 @@ class UserRepository extends BaseController implements ShouldQueue
          $token = $this->issueToken($request,$scope);
          $user->token = $token->accessToken ;
          $user->save();
-        
+
         if($user->email){
             $total  = true;
         } else {
@@ -338,22 +251,22 @@ class UserRepository extends BaseController implements ShouldQueue
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
                 'amount'   =>  1000000
-            ]); 
-            
+            ]);
+
              $res = $this->SendAuthCode($user->cellphone,'salam','کاربر');
             } else {
               Wallet::query()->insert([
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
                 'amount'   =>  5
-            ]);  
+            ]);
             }
-            
+
             $wallet = Wallet::query()->where('user_id',$user->id)->first();
 
 
 
-       
+
         return $this->handleResponse([
             'token' => $token->accessToken,'currency' =>  $wallet->currency , 'total' => $total
         ],'به پنل خوش آمدید ');
@@ -367,19 +280,7 @@ class UserRepository extends BaseController implements ShouldQueue
         if(!$user)
             return $this->handleError([],'not found auth');
 
-        $hashids = new Hashids();
-
-        if ($request->otp != $hashids->decode($user->auth_code)[0])
-        {
-            return $this->handleError([],'wrong auth');
-        }
-
-       // $user->phone_verified_at = PhoneStatus::VERIFIED;
-        $user->save();
-
-
         $token = $this->issueToken($request,$scope);
-
 
         $wallet = Wallet::query()->where('user_id',$user->id)->first();
         if (!$wallet)
@@ -389,9 +290,6 @@ class UserRepository extends BaseController implements ShouldQueue
             ]);
             $wallet = Wallet::query()->where('user_id',$user->id)->first();
 
-
-
-       
         return $this->handleResponse([
             'token' => $token->accessToken,'currency' =>  $wallet->currency
         ],'welcome auth!');
@@ -426,7 +324,12 @@ class UserRepository extends BaseController implements ShouldQueue
     }
     public function findUserByCellphone($cellphone)
     {
-        return User::where('cellphone', $cellphone)->first();
+        $data =  User::where('cellphone', $cellphone)->first();
+        if($data){
+            return $data;
+        }
+        return false;
+
 
     }
     public function findUserByEmail($email)
@@ -469,8 +372,18 @@ class UserRepository extends BaseController implements ShouldQueue
         if ($validator->fails()) {
             return $validator->errors()->first();
         }
+        $res = $this->findUserByCellphone($request->cellphone);
+       if($res){
+           return $res;
+       }
+        $res = $this->findUserByEmail($request->email);
+        if($res){
+            return $res;
+        }
         return User::firstOrNew([
             'cellphone' => $request->cellphone,
+            'email'     => $request->email,
+            'password'  => $request->password
         ],$request->only([
             'cellphone'
         ]));
@@ -495,19 +408,19 @@ class UserRepository extends BaseController implements ShouldQueue
         if($request->en_last_name)
             $user->en_last_name = $request->en_last_name ;
         if($request->email){
-            $user->email = $request->email ; 
+            $user->email = $request->email ;
         }
         if($request->jobs){
-        $user->jobs = $request->jobs ; 
+        $user->jobs = $request->jobs ;
         }
         if($request->birthday){
-        $user->birthday = $request->birthday ; 
+        $user->birthday = $request->birthday ;
         }
         if($request->education){
-            $user->education = $request->education ; 
+            $user->education = $request->education ;
         }
         if($request->gender){
-            $user->gender = $request->gender ; 
+            $user->gender = $request->gender ;
         }
         if ($request->has('image')) {
             $destination_path ='/user/profile';
@@ -825,19 +738,19 @@ class UserRepository extends BaseController implements ShouldQueue
             'password' => ($request->newPassword) ? Hash::make($request->newPassword) : $user->password,
         ]);
     }
-    
-      public function joinUserAdmin(Request $request) 
+
+      public function joinUserAdmin(Request $request)
     {
       $user = new User();
       $user->cellphone = $request->cellphone;
-      
+
       $user->phone_verified_at = PhoneStatus::VERIFIED;
-    
+
       $token = $this->issueToken($request,'personal-client');
       $user->token = $token->accessToken ;
-       
+
       $user->save();
-      
+
       return $this->handleResponse($user,'shown user!');
     }
 }

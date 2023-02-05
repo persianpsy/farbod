@@ -37,38 +37,38 @@ class CouponController extends BaseController
          $hashids = new Hashids();
          $discount = 3 ;
          $profit = 5 ;
-       
+
         $code =  $hashids->encode($discount.$request->user()->id.$profit);
         $user = User::where('cellphone',$request->cellphone)->firstOrNew();
-     
-     
-  
+
+
+
           $coupon = Coupon::firstOrCreate(array('code' => $code, 'user_id' => $request->user()->id));
-          
-        
+
+
             if($coupon->amount < 3 )
             {
-               
+
                  if($request->cellphone) {
                                         $pieces = explode(" ", $request->user()->first_name);
-                    $res = $this->SendAuthCode($request->cellphone,'invite2',$code,$pieces[0],$request->user()->cellphone); 
-                  
+                    $res = $this->SendAuthCode($request->cellphone,'invite2',$code,$pieces[0],$request->user()->cellphone);
+
                 }
-               
-                
+
+
                 if($request->email) {
-                 
+
                     $data = ['code' => $code,'text'=>$request->text,'sender'=>$request->sender];
-                        
+
                      $mail =  Mail::to($request->email)->send(new \App\Mail\InviteFriend ($data));
-                 
+
                 }
-              
-             
+
+
                 $coupon->amount =  (int) $coupon->amount  + 1 ;
                 $coupon->update();
             }
-           
+
 
             return $this->handleResponse([$coupon,$hashids->decode($coupon->code)], 'coupon successfully registered!');
 
@@ -131,36 +131,36 @@ class CouponController extends BaseController
     }
       public function discount (Request $request)
     {
-        
-        if($request->code === 'AZAR')
-        {
-             return floor(($request->price*7/10)/10000)*10000;
-        }
-        
+
+//        if($request->code === 'AZAR')
+//        {
+//             return floor(($request->price*7/10)/10000)*10000;
+//        }
+
          $hashids = new Hashids();
            $coupon = Coupon::query()->where('code',$request->code)->first();
-           
 
-       
+
+
         if (!$coupon){
             return $request->price ;
         }
-        
+
          $infoo =  substr($hashids->decode($coupon->code)[0],0,strlen($hashids->decode($coupon->code)[0])-1);
-            
+
             $infooo = substr($infoo,1) ;
-           
+
        if($request->user()->id == $infooo)
        {
-           
+
           $coupon->limit =  $coupon->limit + 1 ;
           $coupon->update();
-            
+
                 if($coupon->limit > 3)
             {
                 return $request->price ;
             }
-          return floor(($request->price*1/2)/10000)*10000 ; 
+          return floor(($request->price*1/2)/10000)*10000 ;
        }
         if($coupon->limit > 3)
         {
@@ -168,10 +168,10 @@ class CouponController extends BaseController
         }
         $coupon->limit =  $coupon->limit + 1 ;
         $coupon->update();
-        
-            
+
+
         return $request->price - substr($hashids->decode($coupon->code)[0],0,1)*.1*$request->price;
-        
+
          $coupon ;
     }
 }
