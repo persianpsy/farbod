@@ -225,7 +225,7 @@ class UserController extends BaseController
     {
 
 
-        return DB::table('log_activity')->orderBy('created_at', 'DESC')->get();
+        return DB::table('activity_log')->orderBy('created_at', 'DESC')->get();
 
 
     }
