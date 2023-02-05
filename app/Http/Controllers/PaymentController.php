@@ -208,9 +208,18 @@ class PaymentController extends BaseController
         $result = curl_exec($ch);
         curl_close($ch);
         $result = json_decode($result, true);
-        Log::info('verify payment.', ['payment response' => $result]);
+        $reservation = Reservation::with('wallet','user','staff')->where('payment_id',$payment->id)->first();
+        $description = serialize([
+            'event' => 'verify Bank port ',
+            'phone' => $request->user()->cellphone,
+            'res'   => $result,
+            'reservation' => $reservation
 
-        $reservation = Reservation::with('wallet','user')->where('payment_id',$payment->id)->first();
+        ]);
+        activity()->log($description);
+//        Log::info('verify payment.', ['payment response' => $result]);
+
+    
 
 
        if (isset($result['data']['code']) &&  $result['data']['code']== 100) {
