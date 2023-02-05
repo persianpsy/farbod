@@ -32,7 +32,7 @@ class AppointmentController extends BaseController
         $data = Staff::with('user');
         $name = explode("-", $request->staff_id);
         $user_id = User::query()->where('en_first_name',$name[0])->where('en_last_name',$name[1])->first()->id;
-      $user_id = Staff::query()->where('user_id',$user_id)->first()->id;
+        $user_id = Staff::query()->where('user_id',$user_id)->first()->id;
             $data->where('id',$user_id);
       
         if ($request->month ) {
@@ -49,7 +49,6 @@ class AppointmentController extends BaseController
                  ->where('date','>',\verta()->yesterday()->formatDate())
                 ->where('date','<',\verta()->month($request->month)->endMonth())
                 ->where('staff_id',$user_id)
-                ->where('date','>=', Verta::now())
                 ->where('status',AppointmentStatus::ACTIVE)
             ;
 
@@ -91,7 +90,6 @@ class AppointmentController extends BaseController
             $appointment = DB::table('appointments')
                  ->where('deleted_at',null)
                 ->where('date','>=', \verta()->startMonth())
-                ->where('date','>',\verta()->now())
                  ->where('date','>',\verta()->yesterday()->formatDate())
                 ->where('date','<',\verta()->endMonth())
                 ->where('staff_id',$user_id)
@@ -323,7 +321,6 @@ class AppointmentController extends BaseController
             $appointment = Appointment::with('staff')
                 ->where('date','>=', \verta()->startMonth())
                 ->where('date','<',\verta()->endMonth())
-                ->where('date','>',\verta()->now())
                       ->where('status',AppointmentStatus::ACTIVE)
             
             ;
@@ -333,8 +330,7 @@ class AppointmentController extends BaseController
                 $selected = false;
                 if  (Appointment::query()
                     ->where('date','=', $start->format('Y-m-d'))
-                    ->where('date','>',\verta()->now())
-                    ->where('status',AppointmentStatus::ACTIVE)
+                          ->where('status',AppointmentStatus::ACTIVE)
                    ->first()
                     )
                 {
