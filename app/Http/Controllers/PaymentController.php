@@ -211,7 +211,6 @@ class PaymentController extends BaseController
         $reservation = Reservation::with('wallet','user','staff')->where('payment_id',$payment->id)->first();
         $description = serialize([
             'event' => 'verify Bank port ',
-            'phone' => $request->user()->cellphone,
             'res'   => $result,
             'reservation' => $reservation
 
