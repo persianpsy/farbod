@@ -149,12 +149,13 @@ class UserRepository extends BaseController implements ShouldQueue
     {
         $user = $this->firstOrNewUser($request);
 
-        if ($request->model = 'email' )
-        {
-            $this->emailAuth($request);
-        }
+//        if ($request->model = 'email' )
+//        {
+//            $this->emailAuth($request);
+//        }
 
         $this->sendOTP($user,$request);
+        return $this->handleResponse([],'send otp');
     }
     public function preEmailAuth (Request $request)
     {
@@ -250,7 +251,7 @@ class UserRepository extends BaseController implements ShouldQueue
                Wallet::query()->insert([
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
-                'amount'   =>  1000000
+                'amount'   =>  500000
             ]);
 
              $res = $this->SendAuthCode($user->cellphone,'salam','کاربر');
@@ -258,7 +259,6 @@ class UserRepository extends BaseController implements ShouldQueue
               Wallet::query()->insert([
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
-                'amount'   =>  5
             ]);
             }
 
