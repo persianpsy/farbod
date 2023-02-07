@@ -780,6 +780,6 @@ class UserRepository extends BaseController implements ShouldQueue
             'currency' =>  $request->country
         ]);
 
-        return $this->handleResponse($user,'shown user!');
+        return $this->handleResponse($user,'shown user!!');
     }
 }
