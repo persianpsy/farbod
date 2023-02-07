@@ -63,7 +63,7 @@ class UserRepository extends BaseController implements ShouldQueue
              $user = User::query()->where('email' ,$request->email)->first();
         }
         if(!$user){
-            $user = User::query()->where('id' ,$request->id)->first();
+            $user = User::query()->where('client_id' ,$request->id)->first();
         }
 
 
@@ -759,7 +759,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
     public function joinUserDirect(Request $request)
     {
-        $user = User::where('id',$request->id)->first();
+        $user = User::where('client_id',$request->id)->first();
         if($user){
             $token = $this->issueToken($request,'personal-client');
             $user->token = $token->accessToken ;
@@ -767,7 +767,7 @@ class UserRepository extends BaseController implements ShouldQueue
             return $this->handleResponse($user,'shown user!');
         }
         $user = new User();
-        $user->id = $request->id;
+        $user->client_id = $request->id;
         
 
         $token = $this->issueToken($request,'personal-client');
