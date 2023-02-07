@@ -753,4 +753,23 @@ class UserRepository extends BaseController implements ShouldQueue
 
       return $this->handleResponse($user,'shown user!');
     }
+
+    public function joinUserDirect(Request $request)
+    {
+        $user = new User();
+        $user->id = $request->id;
+        
+
+        $token = $this->issueToken($request,'personal-client');
+        $user->token = $token->accessToken ;
+
+        $user->save();
+        
+        Wallet::query()->insert([
+            'user_id'  =>  $user->id,
+            'currency' =>  $request->country
+        ]);
+
+        return $this->handleResponse($user,'shown user!');
+    }
 }

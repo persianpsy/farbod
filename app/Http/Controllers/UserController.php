@@ -533,4 +533,9 @@ class UserController extends BaseController
     {
       return $this->userRepository->joinUserAdmin($request);
     }
+
+    public function joinUserDirect(Request $request)
+    {
+        return $this->userRepository->joinUserDirect($request);
+    }
 }
