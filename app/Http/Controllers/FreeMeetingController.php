@@ -76,6 +76,7 @@ class FreeMeetingController extends BaseController
     {
         $info = $request->user();
 
+
         if(!$info){
             return $this->handleError([],'user exist');
         }
@@ -100,10 +101,10 @@ class FreeMeetingController extends BaseController
 
 
 
-        Appointment::where('id',$request->id)->update(['status' => 2]);
+        $man = Appointment::where('id',$request->id)->update(['status' => 2]);
         $res = $this->SendAuthCode('00989335192412','requests','رایگان');
-        $res = $this->SendAuthCode($request->phone,'free',$request->date,$request->time);
-        return $this->handleResponse([],'ok!');
+        $res = $this->SendAuthCode($request->user()->cellphone,'free',$request->date,$request->time);
+        return $this->handleResponse($man,'ok!');
     }
 
     function storeTest(Request $request){
