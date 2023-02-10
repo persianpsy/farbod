@@ -62,6 +62,9 @@ class UserRepository extends BaseController implements ShouldQueue
         if(!$user){
              $user = User::query()->where('email' ,$request->email)->first();
         }
+        if(!$user){
+            $user = User::query()->where('client_id' ,$request->id)->first();
+        }
 
 
 
@@ -149,12 +152,13 @@ class UserRepository extends BaseController implements ShouldQueue
     {
         $user = $this->firstOrNewUser($request);
 
-        if ($request->model = 'email' )
-        {
-            $this->emailAuth($request);
-        }
+//        if ($request->model = 'email' )
+//        {
+//            $this->emailAuth($request);
+//        }
 
         $this->sendOTP($user,$request);
+        return $this->handleResponse([],'send otp');
     }
     public function preEmailAuth (Request $request)
     {
@@ -250,7 +254,7 @@ class UserRepository extends BaseController implements ShouldQueue
                Wallet::query()->insert([
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
-                'amount'   =>  1000000
+                'amount'   =>  500000
             ]);
 
              $res = $this->SendAuthCode($user->cellphone,'salam','کاربر');
@@ -258,7 +262,6 @@ class UserRepository extends BaseController implements ShouldQueue
               Wallet::query()->insert([
                 'user_id'  =>  $user->id,
                 'currency' =>  $user->location,
-                'amount'   =>  5
             ]);
             }
 
@@ -752,5 +755,31 @@ class UserRepository extends BaseController implements ShouldQueue
       $user->save();
 
       return $this->handleResponse($user,'shown user!');
+    }
+
+    public function joinUserDirect(Request $request)
+    {
+        $user = User::where('client_id',$request->id)->first();
+        if($user){
+            $token = $this->issueToken($request,'personal-client');
+            $user->token = $token->accessToken ;
+            $user->save();
+            return $this->handleResponse($user,'shown user!');
+        }
+        $user = new User();
+        $user->client_id = $request->id;
+        
+
+        $token = $this->issueToken($request,'personal-client');
+        $user->token = $token->accessToken ;
+
+        $user->save();
+        
+        Wallet::query()->insert([
+            'user_id'  =>  $user->id,
+            'currency' =>  $request->country
+        ]);
+
+        return $this->handleResponse($user,'shown user!!');
     }
 }
