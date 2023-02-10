@@ -74,31 +74,20 @@ class FreeMeetingController extends BaseController
      */
     public function store(Request $request)
     {
-        $info = User::where('cellphone',$request->phone)->first();
+        $info = $request->user()->id;
 
         if($info){
             return $this->handleError([],'user exist');
         }
 
-
-        $user = new User();
-        $user->email = $request->email;
-        $user->cellphone = $request->phone;
-        $user->save();
-
-
         $store = new Reservation();
         $store->appointment_id = $request->id;
-        $store->user_id = $user->id;
+        $store->user_id = $info;
         $store->price = 0;
         $store->staff_id = 23;
         $store->status = 2;
         $store->save();
 
-        Wallet::query()->insert([
-            'user_id'  =>  $user->id,
-            'currency' =>  1
-        ]);
 
 
         Appointment::where('id',$request->id)->update(['status' => 2]);
