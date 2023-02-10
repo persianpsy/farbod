@@ -88,6 +88,16 @@ class FreeMeetingController extends BaseController
         $store->status = 2;
         $store->save();
 
+        $redis = Redis::connection();
+
+
+
+        $data = $redis->get('uuid_'.$request->uuid);
+
+
+
+        $redis->set('user_'.$info,$data);
+
 
 
         Appointment::where('id',$request->id)->update(['status' => 2]);
