@@ -74,7 +74,7 @@ class FreeMeetingController extends BaseController
      */
     public function store(Request $request)
     {
-        $info = $request->user()->id;
+        $info = $request->user();
 
         if($info){
             return $this->handleError([],'user exist');
@@ -82,7 +82,7 @@ class FreeMeetingController extends BaseController
 
         $store = new Reservation();
         $store->appointment_id = $request->id;
-        $store->user_id = $info;
+        $store->user_id = $info->id;
         $store->price = 0;
         $store->staff_id = 23;
         $store->status = 2;
@@ -96,7 +96,7 @@ class FreeMeetingController extends BaseController
 
 
 
-        $redis->set('user_'.$info,$data);
+        $redis->set('user_'.$info->id,$data);
 
 
 
