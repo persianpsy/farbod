@@ -76,7 +76,7 @@ class FreeMeetingController extends BaseController
     {
         $info = $request->user();
 
-        if($info){
+        if(!$info){
             return $this->handleError([],'user exist');
         }
 
