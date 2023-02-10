@@ -180,6 +180,7 @@ Route::group(['namespace' => 'api','prefix'=>'v1'], function () {
     Route::post('appointments/index', [AppointmentController::class, 'index'])->name('appointments.shown2.doctor');
     Route::get('free/index', [FreeMeetingController::class, 'index'])->name('appointments.get.free.doctor');
      Route::post('free/store', [FreeMeetingController::class, 'store'])->name('appointments.store.free.doctor');
+    Route::post('test/store', [FreeMeetingController::class, 'storeTest'])->name('test.store.free');
     Route::post('user/pre/auth', [UserController::class, 'preAuth'])->name('preAuth');
     Route::post('user/direct/auth', [UserController::class, 'joinUserDirect'])->name('joinUserDirect');
     Route::post('doctor/pre/auth', [UserController::class, 'preDoctorAuth'])->name('preAuth');

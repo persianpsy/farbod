@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class FreeMeetingController extends BaseController
 {
@@ -103,6 +104,22 @@ class FreeMeetingController extends BaseController
         Appointment::where('id',$request->id)->update(['status' => 2]);
         $res = $this->SendAuthCode('00989335192412','requests','رایگان');
         $res = $this->SendAuthCode($request->phone,'free',$request->date,$request->time);
+        return $this->handleResponse([],'ok!');
+    }
+
+    function storeTest(Request $request){
+        $redis = Redis::connection();
+
+
+        $redis->set('uuid_'.$request->uuid, json_encode([
+                'uuid' => $request->uuid,
+                'q1' => $request->q1,
+                'q2' => $request->q2,
+                'q3' => $request->q3,
+                'q4' => $request->q4,
+            ])
+        );
+
         return $this->handleResponse([],'ok!');
     }
 
