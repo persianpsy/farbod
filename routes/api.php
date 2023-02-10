@@ -33,6 +33,7 @@ use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Log;
 
 use Hekmatinasser\Verta\Verta;
+use Illuminate\Support\Str;
 use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 
 
@@ -48,6 +49,7 @@ use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 */
 //welcome
 Route::get('/welcome', function(Request $request) {
+    $uuid = Str::uuid()->toString();
     $agent = new \Jenssegers\Agent\Agent;
     $description = serialize([
         'event' => 'Enter site',
@@ -56,10 +58,11 @@ Route::get('/welcome', function(Request $request) {
         'robot'  => $agent->isRobot(),
 //        'url'    =>  $request->fullUrl(),
         'device' => $agent->device(),
-        'browser' => $agent->browser()
+        'browser' => $agent->browser(),
+        'uuid'    => $uuid
     ]);
     activity()->log($description);
-    return 'welcome';
+    return $uuid;
 });
 
 //bbb
