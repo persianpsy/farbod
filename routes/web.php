@@ -31,7 +31,7 @@ Route::get('/', function(Request $request) {
     $redis = Redis::connection();
 
 
-    $redis->append('user_1', json_encode([
+    $redis->set('user_1', json_encode([
             'first_name' => 'FARBOD',
             'last_name' => 'NASIRI'
         ])

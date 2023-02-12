@@ -97,7 +97,7 @@ class FreeMeetingController extends BaseController
 
 
 
-        $redis->set('user_'.$info->id,$data);
+        $redis->set('test_'.$info->id,$data);
 
 
 
