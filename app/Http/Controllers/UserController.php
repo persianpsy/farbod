@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Stevebauman\Location\Facades\Location;
 use App\Exports\UsersExport;
@@ -210,7 +211,14 @@ class UserController extends BaseController
             return $this->model->paginate();
         }
     }
+    public function adminTest(Request $request)
+    {
+        $redis = Redis::connection();
+        $data = $redis->get('uuid_'.$request->uuid);
+        $test = $redis->get('test_'.$request->id);
 
+        return $this->handleResponse(['test' => $test,'data' => $data],'ok!');
+    }
     public function adminIndex(Request $request)
     {
 
@@ -225,7 +233,7 @@ class UserController extends BaseController
     {
 
         return DB::table('activity_log')->orderBy('created_at', 'DESC')->paginate(50);
-        
+
     }
     /**
      * Display a listing of the resource.
