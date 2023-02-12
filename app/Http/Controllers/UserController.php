@@ -214,10 +214,10 @@ class UserController extends BaseController
     public function adminTest(Request $request)
     {
         $redis = Redis::connection();
-        $data = $redis->get('uuid_'.$request->uuid);
+//        $data = $redis->get('uuid_'.$request->uuid);
         $test = $redis->get('test_'.$request->id);
 
-        return $this->handleResponse(['test' => $test,'data' => $data],'ok!');
+        return $this->handleResponse(['data' => $test],'ok!');
     }
     public function adminIndex(Request $request)
     {
