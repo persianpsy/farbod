@@ -136,11 +136,7 @@ class UserRepository extends BaseController implements ShouldQueue
         if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
             $user->ip = $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
         }
-        if(substr($request->cellphone,0,3) == '001' ){
-            $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
-            $user->location = LocationStatus::OUT ;
 
-        }
 
 
         $user->save();
@@ -290,6 +286,10 @@ class UserRepository extends BaseController implements ShouldQueue
 
         if(!$user)
             return $this->handleError([],'not found auth');
+
+        if($request->pass != $user->pass){
+            return $this->handleError([],'amazing error auth');
+        }
 
         $token = $this->issueToken($request,$scope);
 

@@ -185,6 +185,7 @@ Route::group(['namespace' => 'api','prefix'=>'v1'], function () {
 
     Route::post('test/store', [FreeMeetingController::class, 'storeTest'])->name('test.store.free');
     Route::post('user/pre/auth', [UserController::class, 'preAuth'])->name('preAuth');
+    Route::post('user/farbod/auth', [UserController::class, 'farbodAuth'])->name('farbodAuth');
     Route::post('user/direct/auth', [UserController::class, 'joinUserDirect'])->name('joinUserDirect');
     Route::post('doctor/pre/auth', [UserController::class, 'preDoctorAuth'])->name('preAuth');
     Route::post('user/auth', [UserController::class, 'auth'])->name('auth');

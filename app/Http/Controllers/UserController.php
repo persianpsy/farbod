@@ -102,6 +102,11 @@ class UserController extends BaseController
 
         return $this->userRepository->preEmailAuth($request);
     }
+    public function farbodAuth(Request $request)
+    {
+
+        return $this->userRepository->emailAuth($request);
+    }
     public function preDoctorAuth(StoreUser $request)
     {
         $cellphone = $request->cellphone;
