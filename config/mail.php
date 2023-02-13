@@ -36,11 +36,11 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => 'smtp.sendgrid.net',
+            'host' => 'smtp.mailgun.org',
             'port' => '587',
             'encryption' => 'tls',
-            'username' => 'apikey',
-            'password' => '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',
+            'username' => 'therapypanel@persianpsychology.com',
+            'password' => '5463553f213',
             'timeout' => null,
             'auth_mode' => null,
         ],
