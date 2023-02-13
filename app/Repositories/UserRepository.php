@@ -160,8 +160,8 @@ class UserRepository extends BaseController implements ShouldQueue
 //            $this->emailAuth($request);
 //        }
 
-        $this->sendOTP($user,$request);
-        return $this->handleResponse([],'send otp');
+        $data = $this->sendOTP($user,$request);
+        return $this->handleResponse($data,'send otp');
     }
     public function preEmailAuth (Request $request)
     {
