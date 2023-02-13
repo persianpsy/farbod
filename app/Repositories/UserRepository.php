@@ -80,6 +80,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
         if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098' || substr($request->cellphone,0,3) != '001')
         {
+            return 'hi';
             $user->location = LocationStatus::OUT ; // NOT IR;
 
             $info = array([
