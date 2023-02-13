@@ -78,10 +78,9 @@ class UserRepository extends BaseController implements ShouldQueue
 
         $user->auth_code = $hashids->encode($code);
         $res = [];
-         return substr($request->cellphone,0,3) ;
-        if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098' || substr($request->cellphone,0,3) != '001')
+
+        if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098')
         {
-            return 'ffffffffff';
             $user->location = LocationStatus::OUT ; // NOT IR;
 
             $info = array([
@@ -129,13 +128,18 @@ class UserRepository extends BaseController implements ShouldQueue
 
 
         } else{
-            return 'ggggggggggggggggggg';
+
             $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
             $user->location = LocationStatus::IR ; //IR;
-            return 'gg';
+
         }
         if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
             $user->ip = $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        }
+        if(substr($request->cellphone,0,3) == '001' ){
+            $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
+            $user->location = LocationStatus::OUT ;
+            return 'gggggggggggggTTTTTTTTTTTgggggg';
         }
 
 
