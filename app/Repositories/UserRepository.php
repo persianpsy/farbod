@@ -78,6 +78,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
         $user->auth_code = $hashids->encode($code);
         $res = [];
+         return substr($request->cellphone,0,3) ;
         if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098' || substr($request->cellphone,0,3) != '001')
         {
             return 'ffffffffff';
