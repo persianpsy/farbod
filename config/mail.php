@@ -38,7 +38,7 @@ return [
             'transport' => 'smtp',
             'host' => 'smtp.sendgrid.net',
             'port' => '587',
-            'encryption' => 'tls',
+            'encryption' => 'ssl',
             'username' => 'apikey',
             'password' => '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',
             'timeout' => null,
@@ -84,7 +84,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'it@persianpsychology.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
