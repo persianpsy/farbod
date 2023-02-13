@@ -80,7 +80,7 @@ class UserRepository extends BaseController implements ShouldQueue
         $res = [];
         if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098' || substr($request->cellphone,0,3) != '001')
         {
-
+            return 'ffffffffff';
             $user->location = LocationStatus::OUT ; // NOT IR;
 
             $info = array([
@@ -128,6 +128,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
 
         } else{
+            return 'ggggggggggggggggggg';
             $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
             $user->location = LocationStatus::IR ; //IR;
             return 'gg';
