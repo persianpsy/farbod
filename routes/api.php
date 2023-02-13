@@ -67,7 +67,8 @@ Route::get('/welcome', function(Request $request) {
 
 //bbb
 Route::get('/bbb', function() {
-return bigbluebutton()->all();
+    Mail::to('partovi74@gmail.com')->send(new \App\Mail\InviteFriend ('data'));
+//return bigbluebutton()->all();
 
 });
 
