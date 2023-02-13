@@ -78,7 +78,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
         $user->auth_code = $hashids->encode($code);
 
-        if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098')
+        if ($request->location != 'IR' || substr($request->cellphone,0,4) != '0098' || substr($request->cellphone,0,3) != '001')
         {
             $user->location = LocationStatus::OUT ; // NOT IR;
 
@@ -768,13 +768,13 @@ class UserRepository extends BaseController implements ShouldQueue
         }
         $user = new User();
         $user->client_id = $request->id;
-        
+
 
         $token = $this->issueToken($request,'personal-client');
         $user->token = $token->accessToken ;
 
         $user->save();
-        
+
         Wallet::query()->insert([
             'user_id'  =>  $user->id,
             'currency' =>  $request->country
