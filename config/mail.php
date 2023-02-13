@@ -37,8 +37,8 @@ return [
         'smtp' => [
             'transport' => 'smtp',
             'host' => 'smtp.mailgun.org',
-            'port' => '587',
-            'encryption' => 'tls',
+            'port' => '465',
+            'encryption' => 'ssl',
             'username' => 'therapypanel@persianpsychology.com',
             'password' => '5463553f213',
             'timeout' => null,
