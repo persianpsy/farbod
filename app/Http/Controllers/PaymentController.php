@@ -212,11 +212,11 @@ class PaymentController extends BaseController
         $description = serialize([
             'event' => 'verify Bank port ',
             'res'   => $result,
-            'reservation' => $reservation->staff->user->en_full_name
+//            'reservation' => $reservation->staff->user->en_full_name
 
         ]);
         activity()->log($description);
-//        Log::info('verify payment.', ['payment response' => $result]);
+
 
 
 
@@ -232,6 +232,13 @@ class PaymentController extends BaseController
                 $wallet->save();
 
               if($reservation){
+                  $description = serialize([
+                      'event' => 'verify Bank port ',
+                      'res'   => $result,
+                      'reservation' => $reservation->staff->user->en_full_name
+
+                  ]);
+                  activity()->log($description);
                 $reservation->appointment->status = AppointmentStatus::INACTIVE;
                 $reservation->status = ReservationStatus::PAID ;
                 $reservation->appointment->save();

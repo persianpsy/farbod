@@ -176,6 +176,9 @@ class StaffController extends BaseController
         $staff->degree = $request->degree;
         $staff->en_degree = $request->en_degree;
 
+        $staff->cost_toman = $request->cost_toman;
+        $staff->cost_dollar = $request->cost_dollar;
+
         $staff->description = $request->description;
         $staff->en_description = $request->en_description;
 
