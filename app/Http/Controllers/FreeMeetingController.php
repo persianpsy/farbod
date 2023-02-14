@@ -117,6 +117,8 @@ class FreeMeetingController extends BaseController
                 'q2' => $request->q2,
                 'q3' => $request->q3,
                 'q4' => $request->q4,
+                'q5' => $request->q5,
+                'q6' => $request->q6,
             ])
         );
 
