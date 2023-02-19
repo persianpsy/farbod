@@ -40,10 +40,18 @@ class FreeMeetingController extends BaseController
         $time =  \verta()->startMonth();
         $appointment = DB::table('appointments')
             ->where('deleted_at',null)
-            ->where('date','>=',\verta()->today()->formatDate())
+            ->where('date','>',\verta()->today()->formatDate())
             ->where('date','<',\verta()->today()->AddDays(7))
             ->where('staff_id',$user_id)
             ->where('status',AppointmentStatus::ACTIVE)
+        ;
+
+        $today =   $appointment = DB::table('appointments')
+            ->where('deleted_at',null)
+            ->where('date','=',\verta()->today()->formatDate())
+            ->where('status',AppointmentStatus::ACTIVE)
+            ->where('staff_id',$user_id)
+            ->where('time','>',\verta()->addMinutes(30)->format('H:i'))
         ;
 
 
@@ -53,6 +61,7 @@ class FreeMeetingController extends BaseController
 
         $res = [
             'appointment' => $meeting,
+            'today' => $today->get(['time','date','id'])->toArray(),
             't1'  =>  $time->today()->format('Y-m-d'),
             't2'  =>  $time->today()->addDay()->format('Y-m-d'),
             't3'  =>  $time->today()->addDays(2)->format('Y-m-d'),
