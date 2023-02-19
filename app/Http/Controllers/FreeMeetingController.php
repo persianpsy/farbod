@@ -50,7 +50,7 @@ class FreeMeetingController extends BaseController
         $meeting = $appointment->get(['time','date','id'])->toArray();
 
 
-        $today =   $appointment = DB::table('appointments')
+        $today =  DB::table('appointments')
             ->where('deleted_at',null)
             ->where('date','=',\verta()->today()->formatDate())
             ->where('status',AppointmentStatus::ACTIVE)
