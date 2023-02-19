@@ -45,6 +45,10 @@ class FreeMeetingController extends BaseController
             ->where('staff_id',$user_id)
             ->where('status',AppointmentStatus::ACTIVE)
         ;
+        
+
+        $meeting = $appointment->get(['time','date','id'])->toArray();
+
 
         $today =   $appointment = DB::table('appointments')
             ->where('deleted_at',null)
@@ -54,14 +58,11 @@ class FreeMeetingController extends BaseController
             ->where('time','>',\verta()->addMinutes(30)->format('H:i'))
         ;
 
-
-        $meeting = $appointment->get(['time','date','id'])->toArray();
-
-
+        $meeting2 = $today->get(['time','date','id'])->toArray();
 
         $res = [
             'appointment' => $meeting,
-            'today' => $today->get(['time','date','id'])->toArray(),
+            'today' => $meeting2,
             't1'  =>  $time->today()->format('Y-m-d'),
             't2'  =>  $time->today()->addDay()->format('Y-m-d'),
             't3'  =>  $time->today()->addDays(2)->format('Y-m-d'),
