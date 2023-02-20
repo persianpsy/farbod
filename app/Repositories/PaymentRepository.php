@@ -81,7 +81,7 @@ class PaymentRepository extends BaseController
             'event' => 'ورود به درگاه بانک',
             'phone' => $user->cellphone
         ]);
-//        activity()->causedBy($user->cellphone)->log($description);
+        activity()->causedBy(Auth::user())->log($description);
         $url=route('payment.verify',[$payment->id]);
 
             //decharge wallet
