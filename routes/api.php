@@ -84,6 +84,7 @@ Route::group(['namespace' => 'api','prefix'=>'v1','middleware'=>['auth:api','sco
     Route::post('admin/test/index/', [UserController::class, 'adminTest'])->name('users.index.admin.tet');
 
     Route::get('admin/log/index', [UserController::class, 'adminLog'])->name('log.index.admin');
+    Route::post('admin/log/user', [UserController::class, 'getSpecificActivityData'])->name('log.user.admin');
   Route::post('admin/change/wallet', [UserController::class, 'changeWallet'])->name('users.change.wallet');
     Route::get('users/export', [UserController::class, 'export']);
     Route::get('payment/export', [PaymentController::class, 'export']);

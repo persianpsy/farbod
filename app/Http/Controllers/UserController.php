@@ -551,4 +551,18 @@ class UserController extends BaseController
     {
         return $this->userRepository->joinUserDirect($request);
     }
+
+    public function getSpecificActivityData(Request $request)
+    {
+        $info = DB::table('activity_log')->orderBy('created_at', 'DESC')
+            ->where('causer_id',$request->id)->get();
+
+        $d = [];
+        foreach ($info as $datum) {
+            $d[] = $datum;
+        }
+
+
+        return $this->handleResponse($d,'user found!');
+    }
 }
