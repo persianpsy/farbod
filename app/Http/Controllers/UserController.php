@@ -558,8 +558,10 @@ class UserController extends BaseController
             ->where('causer_id',$request->id)->get();
 
         $d = [];
-        foreach ($info as $datum) {
-            $d[] = $datum;
+        
+        foreach ($info as $log) {
+            $desc = unserialize($log->description);
+            $d[] = $desc;
         }
 
 
