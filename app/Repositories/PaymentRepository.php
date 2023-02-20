@@ -70,7 +70,7 @@ class PaymentRepository extends BaseController
         }
     }
 
-    public function jsonPay($token,$via,$phone)
+    public function jsonPay($token,$via,$user)
     {
         $payment = Payment::where('token',$token)->first();
 
@@ -78,11 +78,10 @@ class PaymentRepository extends BaseController
             return response()->json(['پرداخت شما نامعتبر است'],400);
         }
         $description = serialize([
-            'event' => 'Enter Bank port ',
-            'phone' => $phone
-           
+            'event' => 'ورود به درگاه بانک',
+            'phone' => $user->cellphone
         ]);
-        activity()->log($description);
+        activity()->causedBy($user->id)->log($description);
         $url=route('payment.verify',[$payment->id]);
 
             //decharge wallet
@@ -124,7 +123,7 @@ class PaymentRepository extends BaseController
         $err = curl_error($ch);
         $result = json_decode($result, true, JSON_PRETTY_PRINT);
         curl_close($ch);
-       
+
         if ($err) {
            return $result;
         } else {
