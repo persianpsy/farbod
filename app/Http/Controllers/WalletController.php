@@ -126,7 +126,7 @@ class WalletController extends BaseController
             $info->update(['payment_id' => $payment->id]);
         }
 
-        return (new \App\Repositories\PaymentRepository)->jsonPay($payment->token,'zarinpal',$request->user()->cellphone) ;
+        return (new \App\Repositories\PaymentRepository)->jsonPay($payment->token,'zarinpal',$request->user()) ;
     }
 
     public  function discount (DiscountReservationRequest $request)

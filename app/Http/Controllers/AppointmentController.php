@@ -195,7 +195,7 @@ class AppointmentController extends BaseController
     public function store(StoreAppointmentRequest $request)
     {
         $staff = Staff::where('user_id',$request->user()->id)->first();
-        $data = Appointment::where('staff_id',$staff->id)->where('date',$request->date)->whereBetween ('time',[\verta($request->time)->subMinutes(45)->format('H:i'),\verta($request->time)->addMinutes(45)->format('H:i')])->first();
+        $data = Appointment::where('staff_id',$staff->id)->where('date',$request->date)->whereBetween ('time',[\verta($request->time)->subMinutes($staff->time_to_visit)->format('H:i'),\verta($request->time)->addMinutes($staff->time_to_visit)->format('H:i')])->first();
         
         if($data){
               return $this->handleError('جلسه دیگری نزدیک این تاریخ ثبت شده است',$data);

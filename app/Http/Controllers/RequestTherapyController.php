@@ -9,7 +9,9 @@ use App\Http\Traits\SmsTrait;
 use App\Models\User;
 
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestTherapyController extends BaseController
 {
@@ -26,10 +28,10 @@ class RequestTherapyController extends BaseController
      */
     public function index(Request $request,RequestTherapy $requestTherapy = null)
     {
-         
+
           $text = RequestTherapy::with('user','staff','staff.user')->where('status','=',0)->get();
-        
-         
+
+
          return $this->handleResponse( $text,'saved request !');
     }
 
@@ -41,23 +43,28 @@ class RequestTherapyController extends BaseController
      */
     public function store(Request $request)
     {
-    
+
         $text = new RequestTherapy();
-       
+
         $name = explode("-", $request->staff_id);
         $user_id = User::query()->where('en_first_name',$name[0])->where('en_last_name',$name[1])->first()->id;
         $id = Staff::query()->where('user_id',$user_id)->first()->id;
-        
+
         $text->request = $request->text;
         $text->user_id = $request->user()->id;
         $text->staff_id = $id;
-          
+
         $text->save();
-        
+        $description = serialize([
+            'event' => 'درخواست جلسه',
+            'time' =>  Carbon::now()
+        ]);
+        activity()->causedBy(Auth::user())->log($description);
+
          $res = $this->SendAuthCode('00989335192412','requests','فوری');
-        
+
         return $this->handleResponse( $text,'saved request !');
-    
+
     }
 
     /**
@@ -80,15 +87,15 @@ class RequestTherapyController extends BaseController
      */
     public function update(Request $request)
     {
-       
+
        $id = $request->route('id');
-       
+
        $info = RequestTherapy::where('id',$id)->first();
        $info->status = 1;
        $info->save();
-       
+
         return $this->handleResponse( [],'updated request !');
-       
+
     }
 
     /**
@@ -101,14 +108,14 @@ class RequestTherapyController extends BaseController
     {
         return $this->model->delete($requestTherapy);
     }
-    
+
     public function list(Request $request)
     {
         $id = Staff::query()->where('user_id',$request->user()->id)->first()->id;
-        
+
           $text = RequestTherapy::where('staff_id',$id)->get();
-        
-         
+
+
          return $this->handleResponse( $text,'saved request !');
     }
 }

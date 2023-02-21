@@ -16,6 +16,7 @@ use App\Http\Traits\SmsTrait;
 use Carbon\Carbon;
 use App\Models\User;
 use Hekmatinasser\Verta\Verta;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
@@ -45,7 +46,7 @@ class FreeMeetingController extends BaseController
             ->where('staff_id',$user_id)
             ->where('status',AppointmentStatus::ACTIVE)
         ;
-        
+
 
         $meeting = $appointment->get(['time','date','id'])->toArray();
 
@@ -114,6 +115,13 @@ class FreeMeetingController extends BaseController
         $man = Appointment::where('id',$request->id)->first();
         $man->status = 2;
         $man->save();
+
+        $description = serialize([
+            'event' => 'درخواست جلسه رایگان ',
+            'time' =>  Carbon::now()
+        ]);
+        activity()->causedBy(Auth::user())->log($description);
+
         $res = $this->SendAuthCode('00989335192412','requests','رایگان');
         $res = $this->SendAuthCode($request->user()->cellphone,'free',$request->date,$request->time);
         return $this->handleResponse($man,'ok!');
@@ -133,6 +141,12 @@ class FreeMeetingController extends BaseController
                 'q6' => $request->q6,
             ])
         );
+
+        $description = serialize([
+            'event' => 'ثبت تست',
+            'time' =>  Carbon::now()
+        ]);
+        activity()->causedBy(Auth::user())->log($description);
 
         return $this->handleResponse([],'ok!');
     }
