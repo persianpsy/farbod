@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Repositories\PaymentRepository;
 use App\Transformers\PaymentAdminTransformer;
 use App\Repositories\Repository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Wallet;
@@ -209,16 +210,19 @@ class PaymentController extends BaseController
         curl_close($ch);
         $result = json_decode($result, true);
         $reservation = Reservation::with('wallet','user','staff')->where('payment_id',$payment->id)->first();
+//        $description = serialize([
+//            'event' => 'verify Bank port ',
+//            'res'   => $result,
+////            'reservation' => $reservation->staff->user->en_full_name
+//
+//        ]);
+//        activity()->log($description);
         $description = serialize([
-            'event' => 'verify Bank port ',
-            'res'   => $result,
-//            'reservation' => $reservation->staff->user->en_full_name
-
+            'event' => 'خروج درگاه',
+            'time' =>  Carbon::now(),
+            'result'   => $result,
         ]);
-        activity()->log($description);
-
-
-
+        activity()->causedBy(Auth::user())->log($description);
 
 
        if (isset($result['data']['code']) &&  $result['data']['code']== 100) {
@@ -233,12 +237,18 @@ class PaymentController extends BaseController
 
               if($reservation){
                   $description = serialize([
-                      'event' => 'verify Bank port ',
-                      'res'   => $result,
-                      'reservation' => $reservation->staff->user->en_full_name
-
+                      'event' =>   $reservation->staff->user->en_full_name.'پرداخت موفق جلسه',
+                      'time' =>  Carbon::now(),
+                      'result' => $result
                   ]);
-                  activity()->log($description);
+                  activity()->causedBy(Auth::user())->log($description);
+//                  $description = serialize([
+//                      'event' => 'verify Bank port ',
+//                      'res'   => $result,
+//                      'reservation' => $reservation->staff->user->en_full_name
+//
+//                  ]);
+//                  activity()->log($description);
                 $reservation->appointment->status = AppointmentStatus::INACTIVE;
                 $reservation->status = ReservationStatus::PAID ;
                 $reservation->appointment->save();

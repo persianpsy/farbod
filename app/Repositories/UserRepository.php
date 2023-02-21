@@ -160,7 +160,11 @@ class UserRepository extends BaseController implements ShouldQueue
 //        {
 //            $this->emailAuth($request);
 //        }
-
+        $description = serialize([
+            'event' => 'درخواست ورود',
+            'time' =>  Carbon::now()
+        ]);
+        activity()->causedBy($user)->log($description);
         $data = $this->sendOTP($user,$request);
         return $this->handleResponse($data,'send otp');
     }

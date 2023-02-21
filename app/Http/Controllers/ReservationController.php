@@ -61,7 +61,7 @@ class ReservationController extends BaseController
         $model = $model->with('appointment','user','staff','appointment.staff');
         $model->orderBy('created_at', 'DESC');
         return ['data'=>$model->paginate(),'total'=>$model->count()];
-        
+
         //  $model = $this->model;
 
         //     $model = $model->with('appointment','user','staff','appointment.staff');
@@ -228,9 +228,19 @@ class ReservationController extends BaseController
 
         $wallet = Wallet::query()->where('user_id',$request->user()->id)->firstOrFail();
         if (!$wallet) {
+            $description = serialize([
+                'event' => 'خطای کیف پول',
+                'time' =>  Carbon::now()
+            ]);
+            activity()->causedBy(Auth::user())->log($description);
             return $this->handleError([],'not ok!');
         }
         if($wallet->amount < $reserve_data['price']){
+            $description = serialize([
+                'event' => 'هدم موجودی کیف پول',
+                'time' =>  Carbon::now()
+            ]);
+            activity()->causedBy(Auth::user())->log($description);
             return $this->handleError([],'charge wallet!');
         }
 
