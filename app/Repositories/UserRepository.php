@@ -129,7 +129,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
 
         } else{
-            dispatch(new SendSMSNotifications($request->cellphone, 'welcome', $code));
+            dispatch(new smsReminder($request->cellphone, 'welcome', $code));
 
 //            $res = $this->SendAuthCode($request->cellphone,,$code);
             $user->location = LocationStatus::IR ; //IR;
