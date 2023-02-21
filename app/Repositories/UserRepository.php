@@ -129,7 +129,7 @@ class UserRepository extends BaseController implements ShouldQueue
 
         } else{
 
-            $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
+//            $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
             $user->location = LocationStatus::IR ; //IR;
 
         }
