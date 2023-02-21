@@ -9,26 +9,31 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Traits\SmsTrait;
 use Illuminate\Support\Facades\Log;
 use Kavenegar;
 
 class smsReminder implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $cellphone;
-    public $message;
+    use Dispatchable,SmsTrait, InteractsWithQueue, Queueable, SerializesModels;
+    protected $phone;
+    protected $token;
+    protected $pattern;
+    protected $token2;
+    protected $token3;
 
     /**
      * Create a new job instance.
      *
-     * @param $cellphone
-     * @param $message
+     * @return void
      */
-    public function __construct($cellphone,$message)
+    public function __construct($phone, $pattern, $token, $token2 = '', $token3 = '')
     {
-        $this->cellphone = $cellphone;
-        $this->message = $message;
+        $this->phone = $phone;
+        $this->token = $token;
+        $this->pattern = $pattern;
+        $this->token2 = $token2;
+        $this->token3 = $token3;
     }
     /**
      * Execute the job.
@@ -37,9 +42,14 @@ class smsReminder implements ShouldQueue
      */
     public function handle()
     {
+        try {
 
-     
-        $mail =  Mail::to($this->cellphone)->send(new \App\Mail\otpMail ($this->message));  
-             
+            $res = $this->SendAuthCode($this->phone,$this->pattern,$this->token);
+
+        } catch (\Exception $e) {
+//            Log::alert([$this->phone, $token, $e->getMessage(), $this->pattern]);
+        }
+
+
     }
 }
