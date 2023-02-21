@@ -44,7 +44,7 @@ class PaymentController extends BaseController
 
          $model = $model->with('user');
          $model->orderBy('created_at', 'DESC');
-         $data = $model->paginate(100)->getCollection();
+         $data = $model->paginate(50)->getCollection();
          return $this->handleResponse(fractal($data, new PaymentAdminTransformer())->transform(),'reservation found!');
 
 //         return ['data'=>,'total'=>$model->count()];
