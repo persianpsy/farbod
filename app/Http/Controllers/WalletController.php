@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\ReservationStatus;
 use App\Http\Requests\ChargeWalletRequest;
 use App\Http\Requests\DiscountReservationRequest;
 use App\Http\Requests\getInfoWalletRequest;
