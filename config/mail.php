@@ -35,12 +35,17 @@ return [
 
     'mailers' => [
         'smtp' => [
-            'transport' => 'smtp',
-            'host' => 'smtp.mailgun.org',
-            'port' => '465',
+            'host' =>  'smtp.mailgun.org',
+            'port' => env('MAIL_PORT', 587),
             'encryption' => 'ssl',
             'username' => 'therapypanel@persianpsychology.com',
-            'password' => '5463553f213',
+            'password' => 'y5463553f213',
+            'transport' => 'smtp',
+//            'host' => 'smtp.mailgun.org',
+//            'port' => '465',
+//            'encryption' => 'ssl',
+//            'username' => 'therapypanel@persianpsychology.com',
+//            'password' => '5463553f213',
             'timeout' => null,
             'auth_mode' => null,
         ],
