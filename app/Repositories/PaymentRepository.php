@@ -77,11 +77,11 @@ class PaymentRepository extends BaseController
         if (!$payment){
             return response()->json(['پرداخت شما نامعتبر است'],400);
         }
-        $description = serialize([
-            'event' => 'ورود به درگاه ',
-            'time' =>  Carbon::now()
-        ]);
-        activity()->causedBy(Auth::user())->log($description);
+//        $description = serialize([
+//            'event' => 'ورود به درگاه ',
+//            'time' =>  Carbon::now()
+//        ]);
+//        activity()->causedBy(Auth::user())->log($description);
         $url=route('payment.verify',[$payment->id]);
 
             //decharge wallet
