@@ -157,16 +157,15 @@ class UserRepository extends BaseController implements ShouldQueue
     public function preAuth(StoreUser $request)
     {
         $user = $this->firstOrNewUser($request);
-
 //        if ($request->model = 'email' )
 //        {
 //            $this->emailAuth($request);
 //        }
-        $description = serialize([
-            'event' => 'درخواست ورود',
-            'time' =>  Carbon::now()
-        ]);
-        activity()->causedBy($user)->log($description);
+//        $description = serialize([
+//            'event' => 'درخواست ورود',
+//            'time' =>  Carbon::now()
+//        ]);
+//        activity()->causedBy($user)->log($description);
         $data = $this->sendOTP($user,$request);
         return $this->handleResponse($data,'send otp');
     }
