@@ -112,7 +112,7 @@ class WalletController extends BaseController
 
         if ($reservation_id) {
            $info = Reservation::query()->where('id',$reservation_id)->first();
-        } 
+        }
         $price = $request->price ;
         //price
         if(!$price)
@@ -123,9 +123,9 @@ class WalletController extends BaseController
         $payment = (new \App\Repositories\PaymentRepository)->newPayment($price,$request->user(),'',[]);
 
         if ($reservation_id) {
-            $info->update(['payment_id' => $payment->id]);
+            $info->payment_id = $payment->id;
+            $info->save();
         }
-
         return (new \App\Repositories\PaymentRepository)->jsonPay($payment->token,'zarinpal',$request->user()) ;
     }
 
