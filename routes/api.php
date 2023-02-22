@@ -165,7 +165,10 @@ Route::group(['namespace' => 'api','prefix'=>'v1','middleware'=>'auth:api'], fun
 
     Route::post('wallet/discount', [WalletController::class, 'discount'])->name('wallet.discount');
     Route::post('wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
+    Route::post('wallet/direct/charge', [WalletController::class, 'DirectPort'])->name('DirectPort');
 
+    
+    
      Route::post('charge/dollar', [PayPalController::class, 'chargeWallet'])->name('chargeWallet');
     Route::get('wallet/info', [WalletController::class, 'info'])->name('wallet.info');
 

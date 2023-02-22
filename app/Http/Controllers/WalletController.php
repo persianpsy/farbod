@@ -7,6 +7,7 @@ use App\Http\Requests\DiscountReservationRequest;
 use App\Http\Requests\getInfoWalletRequest;
 use App\Models\Coupon;
 use App\Models\Wallet;
+use App\Models\Appointment;
 use App\Repositories\PaymentRepository;
 use App\Repositories\Repository;
 use App\Models\Reservation;
@@ -159,4 +160,35 @@ class WalletController extends BaseController
         return  $this->handleError('not found wallet !',[]);
 
     }
+    public function DirectPort(Request $request){
+        
+        $wallet = Wallet::with('user')->where('user_id',$request->user()->id)->first();
+        if (!$wallet) {
+            return $this->handleError([],'not ok wallet!');
+        }
+
+        $appointment = Appointment::where('id',$request->id)->with('staff')->firstOrFail();
+        
+
+        $data = [
+            'wallet_id'      =>  $wallet->id,
+            'user_id'        =>  $request->user()->id,
+            'staff_id'       =>  $appointment->staff->id,
+            'appointment_id' =>  $request->appointment_id,
+            'price'          =>  (int)$request->price,
+            'status'         =>  ReservationStatus::CREATED
+        ];
+
+        $model = $this->model->create($data);
+        
+        $payment = (new \App\Repositories\PaymentRepository)->newPayment($request->price,$request->user(),'',[]);
+
+      
+        $model->update(['payment_id' => $payment->id]);
+       
+
+        return (new \App\Repositories\PaymentRepository)->jsonPay($payment->token,'zarinpal',$request->user()) ;
+
+    }
+    
 }
