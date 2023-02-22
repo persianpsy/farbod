@@ -143,14 +143,14 @@ class UserRepository extends BaseController implements ShouldQueue
 
         $user->save();
 
-        $description = serialize([
-            'event'  => 'pre Login Api',
-            'input'  => $request->ip(),
-            'header' => $request->header('user-agent'),
-            'user'   => $user->cellphone,
-
-        ]);
-        activity()->log($description);
+//        $description = serialize([
+//            'event'  => 'pre Login Api',
+//            'input'  => $request->ip(),
+//            'header' => $request->header('user-agent'),
+//            'user'   => $user->cellphone,
+//
+//        ]);
+//        activity()->log($description);
 
         return $this->handleResponse($res,'send otp');
     }
