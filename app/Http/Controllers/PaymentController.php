@@ -220,12 +220,12 @@ class PaymentController extends BaseController
 //
 //        ]);
 //        activity()->log($description);
-        $description = serialize([
-            'event' => 'خروج درگاه',
-            'time' =>  Carbon::now(),
-            'result'   => $result,
-        ]);
-        activity()->causedBy(Auth::user())->log($description);
+//        $description = serialize([
+//            'event' => 'خروج درگاه',
+//            'time' =>  Carbon::now(),
+//            'result'   => $result,
+//        ]);
+//        activity()->causedBy(Auth::user())->log($description);
 
 
        if (isset($result['data']['code']) &&  $result['data']['code']== 100) {
@@ -239,12 +239,12 @@ class PaymentController extends BaseController
                 $wallet->save();
 
               if($reservation){
-                  $description = serialize([
-                      'event' =>   $reservation->staff->user->en_full_name.'پرداخت موفق جلسه',
-                      'time' =>  Carbon::now(),
-                      'result' => $result
-                  ]);
-                  activity()->causedBy(Auth::user())->log($description);
+//                  $description = serialize([
+//                      'event' =>   $reservation->staff->user->en_full_name.'پرداخت موفق جلسه',
+//                      'time' =>  Carbon::now(),
+//                      'result' => $result
+//                  ]);
+//                  activity()->causedBy(Auth::user())->log($description);
 //                  $description = serialize([
 //                      'event' => 'verify Bank port ',
 //                      'res'   => $result,
