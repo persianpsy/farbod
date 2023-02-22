@@ -51,17 +51,17 @@ use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 Route::get('/welcome', function(Request $request) {
     $uuid = Str::uuid()->toString();
     $agent = new \Jenssegers\Agent\Agent;
-    $description = serialize([
-        'event' => 'Enter site',
-        'input' => $request->ip(),
-        'header' => $request->header('user-agent'),
-        'robot'  => $agent->isRobot(),
-        'url'    =>  $request->fullUrl(),
-        'device' => $agent->device(),
-        'browser' => $agent->browser(),
-        'uuid'    => $uuid
-    ]);
-    activity()->log($description);
+//    $description = serialize([
+//        'event' => 'Enter site',
+//        'input' => $request->ip(),
+//        'header' => $request->header('user-agent'),
+//        'robot'  => $agent->isRobot(),
+//        'url'    =>  $request->fullUrl(),
+//        'device' => $agent->device(),
+//        'browser' => $agent->browser(),
+//        'uuid'    => $uuid
+//    ]);
+//    activity()->log($description);
     return $uuid;
 });
 
