@@ -141,12 +141,12 @@ class FreeMeetingController extends BaseController
                 'q6' => $request->q6,
             ])
         );
-
-        $description = serialize([
-            'event' => 'ثبت تست',
-            'time' =>  Carbon::now()
-        ]);
-        activity()->causedBy(Auth::user())->log($description);
+//
+//        $description = serialize([
+//            'event' => 'ثبت تست',
+//            'time' =>  Carbon::now()
+//        ]);
+//        activity()->causedBy(Auth::user())->log($description);
 
         return $this->handleResponse([],'ok!');
     }
