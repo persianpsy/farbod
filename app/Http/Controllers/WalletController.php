@@ -169,23 +169,23 @@ class WalletController extends BaseController
         }
 
         $appointment = Appointment::where('id',$request->id)->with('staff')->firstOrFail();
-        
-        $data = [
-            'wallet_id'      =>  $wallet->id,
-            'user_id'        =>  $request->user()->id,
-            'staff_id'       =>  $appointment->staff->id,
-            'appointment_id' =>  $request->appointment_id,
-            'price'          =>  (int)$request->price,
-            'status'         =>  ReservationStatus::CREATED
-        ];
 
-        $model = $this->model->create($data);
-        return $model; 
+
+        $store = new Reservation();
+        $store->appointment_id = $request->id;
+        $store->user_id = $request->user()->id;
+        $store->price = (int)$request->price;
+        $store->staff_id = 23;
+        $store->status = ReservationStatus::CREATED;
+        $store->save();
+        
+       
         
         $payment = (new \App\Repositories\PaymentRepository)->newPayment($request->price,$request->user(),'',[]);
 
-      
-        $model->update(['payment_id' => $payment->id]);
+        $store->payment_id = $payment->id;
+        $store->save();
+   
        
 
         return (new \App\Repositories\PaymentRepository)->jsonPay($payment->token,'zarinpal',$request->user()) ;
