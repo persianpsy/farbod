@@ -36,7 +36,7 @@ return [
     'mailers' => [
         'smtp' => [
             'host' =>  'smtp.mailgun.org',
-            'port' => env('MAIL_PORT', 587),
+            'port' => '465',
             'encryption' => 'ssl',
             'username' => 'therapypanel@persianpsychology.com',
             'password' => 'y5463553f213',
