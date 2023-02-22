@@ -170,7 +170,6 @@ class WalletController extends BaseController
 
         $appointment = Appointment::where('id',$request->id)->with('staff')->firstOrFail();
         
-
         $data = [
             'wallet_id'      =>  $wallet->id,
             'user_id'        =>  $request->user()->id,
@@ -181,6 +180,7 @@ class WalletController extends BaseController
         ];
 
         $model = $this->model->create($data);
+        return $model; 
         
         $payment = (new \App\Repositories\PaymentRepository)->newPayment($request->price,$request->user(),'',[]);
 
