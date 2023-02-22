@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
 
-       Log::info('time.', ['res' => 'time']);
+//       Log::info('time.', ['res' => 'time']);
        $id=[];
         $data =  Reservation::with('appointment','user','staff','staff.user')->whereIn('status',[2])->whereHas('appointment',function ($q) use($id) {
               $q->where('date' ,'=',\verta()->formatDate())->whereBetween ('time',[\verta()->subMinutes(30)->format('H:i'),\verta()->addMinutes(30)->format('H:i')]);
@@ -43,8 +43,8 @@ class Kernel extends ConsoleKernel
           $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
             $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
 
-                 Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
-                 Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
+//                 Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
+//                 Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
 
         }
 
@@ -65,8 +65,8 @@ class Kernel extends ConsoleKernel
             $res_client =  $this->SendAuthCode($title->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
             $res_dr =  $this->SendAuthCode($title->staff->user->cellphone,'remiders',$title->appointment->date,$title->appointment->time);
 
-                 Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
-                 Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
+//                 Log::info('res reminder kavenegar.', ['res_dr' => $res_dr]);
+//                 Log::info('res reminder kavenegar.', ['res_client' =>$res_client]);
         }
 
 
