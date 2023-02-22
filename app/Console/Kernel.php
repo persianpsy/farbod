@@ -72,6 +72,8 @@ class Kernel extends ConsoleKernel
 
 
         })->daily();
+
+        $schedule->command('queue:work')->everyMinute();
     }
 
     /**

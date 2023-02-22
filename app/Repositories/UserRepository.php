@@ -14,6 +14,7 @@ use App\Http\Traits\NotificationTrait;
 //use App\Models\Manager;
 //use App\Models\Player;
 //use App\Models\Seller;
+use App\Jobs\SendSMSNotifications;
 use App\Models\User;
 use App\Jobs\smsReminder;
 use App\Models\Wallet;
@@ -128,8 +129,9 @@ class UserRepository extends BaseController implements ShouldQueue
 
 
         } else{
+            dispatch(new smsReminder($request->cellphone, 'welcome', $code));
 
-            $res = $this->SendAuthCode($request->cellphone,'welcome',$code);
+//            $res = $this->SendAuthCode($request->cellphone,,$code);
             $user->location = LocationStatus::IR ; //IR;
 
         }
