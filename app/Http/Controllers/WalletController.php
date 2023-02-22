@@ -108,8 +108,6 @@ class WalletController extends BaseController
        */
     public function charge(ChargeWalletRequest $request)
     {
-     $reservation_id = $request->reservation_id ?: null;
-     
         $price = $request->price ;
         //price
         if(!$price)
@@ -119,10 +117,11 @@ class WalletController extends BaseController
 
         $payment = (new \App\Repositories\PaymentRepository)->newPayment($price,$request->user(),'',[]);
 
-        if ($reservation_id) {
-            $info = Reservation::query()->where('id',$reservation_id)->first();
+        if ($request->reservation_id) {
+            $info = Reservation::query()->where('id',$request->reservation_id)->first();
             $info->payment_id = $payment->id;
             $info->save();
+            return $info ;
         }
         return (new \App\Repositories\PaymentRepository)->jsonPay($payment->token,'zarinpal',$request->user()) ;
     }
