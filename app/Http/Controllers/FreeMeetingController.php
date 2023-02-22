@@ -116,11 +116,11 @@ class FreeMeetingController extends BaseController
         $man->status = 2;
         $man->save();
 
-        $description = serialize([
-            'event' => 'درخواست جلسه رایگان ',
-            'time' =>  Carbon::now()
-        ]);
-        activity()->causedBy(Auth::user())->log($description);
+//        $description = serialize([
+//            'event' => 'درخواست جلسه رایگان ',
+//            'time' =>  Carbon::now()
+//        ]);
+//        activity()->causedBy(Auth::user())->log($description);
 
         $res = $this->SendAuthCode('00989335192412','requests','رایگان');
         $res = $this->SendAuthCode($request->user()->cellphone,'free',$request->date,$request->time);
