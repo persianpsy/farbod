@@ -33,8 +33,6 @@ class AppointmentController extends BaseController
         $name = explode("-", $request->staff_id);
         $user_id = User::query()->where('en_first_name',$name[0])->where('en_last_name',$name[1])->first()->id;
         $user_id = Staff::query()->where('user_id',$user_id)->first()->id;
-        $user_id->views =  $user_id->views + 1;
-        $user_id->save();
             $data->where('id',$user_id);
 
         if ($request->month ) {

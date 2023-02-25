@@ -110,70 +110,70 @@ class User extends Authenticatable
     }
     public function getTomanBalanceAttribute()
     {
-        if ($this->hasRole('doctor')) {
-            $staff_id = $this->staff->id;
-            $reserve_toman_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
-                $q->where('staff_id', $staff_id);
-            })->where('status', 1)->whereHas('payment',function ($q){
-                $q->where('gateway','!=','paypal');
-            })->get()->sum('price');
-
-            $withdraws = Asset::where(['type' => 3, 'status' => 2])->sum('price');
-
-            return $reserve_toman_money - $withdraws;
-        }
+//        if ($this->hasRole('doctor')) {
+//            $staff_id = $this->staff->id;
+//            $reserve_toman_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
+//                $q->where('staff_id', $staff_id);
+//            })->where('status', 1)->whereHas('payment',function ($q){
+//                $q->where('gateway','!=','paypal');
+//            })->get()->sum('price');
+//
+//            $withdraws = Asset::where(['type' => 3, 'status' => 2])->sum('price');
+//
+//            return $reserve_toman_money - $withdraws;
+//        }
     }
     public function getDollarBalanceAttribute()
     {
-        if ($this->hasRole('doctor')) {
-            $staff_id = $this->staff->id;
-            $reserve_dollar_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
-                $q->where('staff_id', $staff_id);
-            })->where('status', 1)->whereHas('payment',function ($q){
-                $q->where('gateway','paypal');
-            })->get()->sum('price');
-
-            $withdraws = Asset::where(['type' => 4, 'status' => 2])->sum('price');
-
-            return $reserve_dollar_money - $withdraws;
-        }
+//        if ($this->hasRole('doctor')) {
+//            $staff_id = $this->staff->id;
+//            $reserve_dollar_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
+//                $q->where('staff_id', $staff_id);
+//            })->where('status', 1)->whereHas('payment',function ($q){
+//                $q->where('gateway','paypal');
+//            })->get()->sum('price');
+//
+//            $withdraws = Asset::where(['type' => 4, 'status' => 2])->sum('price');
+//
+//            return $reserve_dollar_money - $withdraws;
+//        }
     }
 
     public function getDollarBalanceRemovableAttribute()
     {
-        if ($this->hasRole('doctor')) {
-            $staff_id = $this->staff->id;
-            $reserve_dollar_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
-                $q->where('staff_id', $staff_id);
-            })->where('status', 1)->whereHas('payment',function ($q){
-                $q->where('gateway','paypal');
-            })->get()->sum('price');
-
-            $commission = $this->staff->commission;
-            $commission_price = ($reserve_dollar_money*$commission)/100;
-
-            $withdraws = Asset::where(['type' => 4, 'status' => 2])->sum('price');
-            $total_staff_income = $reserve_dollar_money-$commission_price;
-            return $total_staff_income-$withdraws;
-        }
+//        if ($this->hasRole('doctor')) {
+//            $staff_id = $this->staff->id;
+//            $reserve_dollar_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
+//                $q->where('staff_id', $staff_id);
+//            })->where('status', 1)->whereHas('payment',function ($q){
+//                $q->where('gateway','paypal');
+//            })->get()->sum('price');
+//
+//            $commission = $this->staff->commission;
+//            $commission_price = ($reserve_dollar_money*$commission)/100;
+//
+//            $withdraws = Asset::where(['type' => 4, 'status' => 2])->sum('price');
+//            $total_staff_income = $reserve_dollar_money-$commission_price;
+//            return $total_staff_income-$withdraws;
+//        }
     }
 
     public function getTomanBalanceRemovableAttribute()
     {
-        if ($this->hasRole('doctor')) {
-            $staff_id = $this->staff->id;
-            $reserve_toman_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
-                $q->where('staff_id', $staff_id);
-            })->where('status', 1)->whereHas('payment',function ($q){
-                $q->where('gateway','!=','paypal');
-            })->get()->sum('price');
-
-            $withdraws = Asset::where(['type' => 3, 'status' => 2])->sum('price');
-            $commission = $this->staff->commission;
-            $commission_price = ($reserve_toman_money*$commission)/100;
-            $total_staff_income = $reserve_toman_money-$commission_price;
-            return $total_staff_income-$withdraws;
-        }
+//        if ($this->hasRole('doctor')) {
+//            $staff_id = $this->staff->id;
+//            $reserve_toman_money = Reservation::whereHas('appointment', function ($q) use ($staff_id) {
+//                $q->where('staff_id', $staff_id);
+//            })->where('status', 1)->whereHas('payment',function ($q){
+//                $q->where('gateway','!=','paypal');
+//            })->get()->sum('price');
+//
+//            $withdraws = Asset::where(['type' => 3, 'status' => 2])->sum('price');
+//            $commission = $this->staff->commission;
+//            $commission_price = ($reserve_toman_money*$commission)/100;
+//            $total_staff_income = $reserve_toman_money-$commission_price;
+//            return $total_staff_income-$withdraws;
+//        }
     }
 
     public function media()

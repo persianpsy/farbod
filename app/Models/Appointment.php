@@ -38,9 +38,9 @@ class Appointment extends Model
       return $user->first_name.' '.$user->last_name;
     }
 
-    public function getIsBoughtAttribute()
+    public  function getIsBoughtAttribute()
     {
-//        return (bool)$this->reservations()->where('status',1)->get()->count();
+        return $this->date +  $this->time;
     }
 
 
