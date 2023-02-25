@@ -40,7 +40,7 @@ class Appointment extends Model
 
     public  function getIsBoughtAttribute()
     {
-        return $this->date +  $this->time;
+//        return $this->date +  $this->time;
     }
 
 
