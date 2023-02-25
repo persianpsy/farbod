@@ -50,7 +50,8 @@ class StaffInfoTransformer extends Transformer
         }
 
 
-
+        $data->views = (int) $data->views + 1 ;
+        $data->save();
 
         return [
             'family'           => $family,
