@@ -28,13 +28,15 @@ class AppointmentController extends BaseController
      */
     public function index(IndexAppointmentUserRequest $request,Appointment $appointment = null)
     {
-        
+
         $data = Staff::with('user');
         $name = explode("-", $request->staff_id);
         $user_id = User::query()->where('en_first_name',$name[0])->where('en_last_name',$name[1])->first()->id;
         $user_id = Staff::query()->where('user_id',$user_id)->first()->id;
+        $user_id->views =  $user_id->views + 1;
+        $user_id->save();
             $data->where('id',$user_id);
-      
+
         if ($request->month ) {
             $time =  \verta()->month($request->month)->startMonth();
               if(\verta()->month>$request->month)
@@ -64,7 +66,7 @@ class AppointmentController extends BaseController
                 }
 
                 $date[0] = array( $start->format('Y-m-d'),$selected);
-                
+
             for ($i=1;$i < 30;$i++ )
             {
                 $start = \verta()->month($request->month)->startMonth();
@@ -79,8 +81,8 @@ class AppointmentController extends BaseController
                 {
                     $selected = true;
                 }
-                
-                
+
+
 
                 $date[$i] = array( $d->format('Y-m-d'),$selected);
             }
@@ -96,8 +98,8 @@ class AppointmentController extends BaseController
                 ->where('status',AppointmentStatus::ACTIVE)
             ;
               $passt  =  \verta()->day;
-                    
-                
+
+
                 $start = \verta()->month($request->month)->startMonth();
                 $selected = false;
                 if (DB::table('appointments')
@@ -106,7 +108,7 @@ class AppointmentController extends BaseController
                     ->where('staff_id',$user_id)
                     ->where('status',AppointmentStatus::ACTIVE)->first())
                 {
-                    
+
                     $selected = true;
                 }
 
@@ -138,9 +140,9 @@ class AppointmentController extends BaseController
             }
         }
         $meeting = $appointment->get(['time','date','id'])->toArray();
-        
-      
-        
+
+
+
         $res = [
             'appointment' => $meeting,
             'year'   =>  $time->year,
@@ -154,7 +156,7 @@ class AppointmentController extends BaseController
             'passt'  => $passt,
             'name'  => $data->first()->user->full_name,
             'en_name' => $data->first()->user->en_full_name
-        
+
         ];
 
           return $this->handleResponse($res,'ok');
@@ -196,7 +198,7 @@ class AppointmentController extends BaseController
     {
         $staff = Staff::where('user_id',$request->user()->id)->first();
         $data = Appointment::where('staff_id',$staff->id)->where('date',$request->date)->whereBetween ('time',[\verta($request->time)->subMinutes($staff->time_to_visit)->format('H:i'),\verta($request->time)->addMinutes($staff->time_to_visit)->format('H:i')])->first();
-        
+
         if($data){
               return $this->handleError('جلسه دیگری نزدیک این تاریخ ثبت شده است',$data);
         }
@@ -211,7 +213,7 @@ class AppointmentController extends BaseController
         public function storeAdmin(Request $request)
     {
 
-          
+
         $appointment = new Appointment ;
         $appointment->staff_id = $request->staff;
         $appointment->date = $request->date;
@@ -256,33 +258,33 @@ class AppointmentController extends BaseController
     }
     public function doctorAppointment(Request $request)
     {
-        
+
         $staff_id = Staff::query()->where('user_id',$request->user()->id)->first();
         if($request->up){
             return Appointment::query()->where('staff_id',$staff_id->id)->orderBy('date','ASC')->where('date','>',\verta()->yesterday()->formatDate())->get();
         } else {
             return Appointment::query()->where('staff_id',$staff_id->id)->orderBy('date','desc')->where('date','>',\verta()->yesterday()->formatDate())->get();
         }
-       
+
     }
-    
+
     public function removeItem(Request $request)
     {
         $data = Appointment::query()->where('id',$request->id)->delete();
     }
-    
+
      public function indexTotal (Request $request,Appointment $appointment = null)
     {
-        
+
         if ($request->month ) {
             $time =  \verta()->month($request->month)->startMonth();
-            
+
             $appointment =  Appointment::with('staff')
                 ->where('date','>=', \verta()->month($request->month)->startMonth())
                       ->where('status',AppointmentStatus::ACTIVE)
                 ->where('date','<',\verta()->month($request->month)->endMonth())
-               
-             
+
+
             ;
 
                 $start = \verta()->month($request->month)->startMonth();
@@ -297,7 +299,7 @@ class AppointmentController extends BaseController
                 }
 
                 $date[0] = array( $start->format('Y-m-d'),$selected);
-                
+
             for ($i=1;$i < 30;$i++ )
             {
                 $start = \verta()->month($request->month)->startMonth();
@@ -307,7 +309,7 @@ class AppointmentController extends BaseController
                     ->where('date','>=', $start->format('Y-m-d'))
                           ->where('status',AppointmentStatus::ACTIVE)
                     ->where('date','<',\verta()->month($request->month)->endMonth())
-                  
+
                      ->where('date',$d->format('Y-m-d'))->first())
                 {
                     $selected = true;
@@ -322,10 +324,10 @@ class AppointmentController extends BaseController
                 ->where('date','>=', \verta()->startMonth())
                 ->where('date','<',\verta()->endMonth())
                       ->where('status',AppointmentStatus::ACTIVE)
-            
+
             ;
-            
-    
+
+
                 $start = \verta()->month($request->month)->startMonth();
                 $selected = false;
                 if  (Appointment::query()
@@ -364,7 +366,7 @@ class AppointmentController extends BaseController
         }
         $meeting = $appointment->get()->toArray();
 
-        
+
         $data = [
             'appointment' => $meeting,
             'year'   =>  $time->year,
@@ -375,7 +377,7 @@ class AppointmentController extends BaseController
             'en'     =>  Carbon::now()->format('Y-m-d'),
             'start'  =>  $time->dayOfWeek,
             'date'   =>  $date,
-        
+
         ];
 
           return $this->handleResponse($data,'ok');

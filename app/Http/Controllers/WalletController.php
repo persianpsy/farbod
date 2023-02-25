@@ -168,7 +168,7 @@ class WalletController extends BaseController
             return $this->handleError([],'not ok wallet!');
         }
 
-        $appointment = Appointment::where('id',$request->id)->with('staff')->firstOrFail();
+//        $appointment = Appointment::where('id',$request->id)->with('staff')->firstOrFail();
 
 
         $store = new Reservation();
