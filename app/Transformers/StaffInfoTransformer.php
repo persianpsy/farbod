@@ -68,7 +68,7 @@ class StaffInfoTransformer extends Transformer
             'image'            => $data->image,
             'cost_toman'       => $data->cost_toman,
              'cost_dollar'      => $data->cost_dollar,
-            'data'            => $data,
+            'views'            => $data->views,
             'is_doctor'        => $data->is_doctor,
             'plan'             => $data->plan,
             // 'en_description'   => $data->en_description,
