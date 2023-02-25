@@ -317,7 +317,8 @@ class UserController extends BaseController
         $name = explode("-", $request->name);
         $user_id = User::query()->where('en_first_name',$name[0])->where('en_last_name',$name[1])->first()->id;
             $data->where('user_id',$user_id);
-
+        $user_id->views =  $user_id->views + 1;
+        $user_id->save();
         return $this->handleResponse(fractal($data->get(),new StaffInfoTransformer() )->transform(),'found Staff!');
 
     }
@@ -558,7 +559,7 @@ class UserController extends BaseController
             ->where('causer_id',$request->id)->get();
 
         $d = [];
-        
+
         foreach ($info as $log) {
             $desc = unserialize($log->description);
             $d[] = $desc;

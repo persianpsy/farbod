@@ -26,32 +26,32 @@ class StaffInfoTransformer extends Transformer
         if($data->category_staff->count()> 0 )
         {
              for ( $i= 0 ;  $i < $data->category_staff->count() ; $i++ ){
-           
+
                 if($data->category_staff[$i]->category->id == 2)
                 {
                     $family = true;
-                
+
                 }
                  if($data->category_staff[$i]->category->id == 1)
                 {
                     $child = true;
-                
+
                 }
                  if($data->category_staff[$i]->category->id == 3)
                 {
                     $peronal = true;
-                
+
                 } if($data->category_staff[$i]->category->id == 4)
                 {
                     $couple = true;
-                
+
                 }
-             } 
+             }
         }
-       
-        
-       
-        
+
+
+
+
         return [
             'family'           => $family,
             'couple'           => $couple,
@@ -68,6 +68,7 @@ class StaffInfoTransformer extends Transformer
             'image'            => $data->image,
             'cost_toman'       => $data->cost_toman,
              'cost_dollar'      => $data->cost_dollar,
+            'views'            => $data->views,
             'is_doctor'        => $data->is_doctor,
             'plan'             => $data->plan,
             // 'en_description'   => $data->en_description,
@@ -80,8 +81,8 @@ class StaffInfoTransformer extends Transformer
             'degree'           => $data->degree,
             // 'en_degree'           => $data->en_degree,
             'appointment'                 => $info
-            
-    
+
+
         ];
     }
 
