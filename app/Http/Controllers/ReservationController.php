@@ -323,7 +323,7 @@ class ReservationController extends BaseController
         $response = $client->request('POST', $url, ['json' => [
                 "action"=> "createRoom",
                 "params"=>[
-                    "name"=> $appointment->id,
+                    "name"=> "schedule-".$appointment->id,
                     "title"=> rand(1,10)."جلسه مشاوره رزرو شماره ". $reservation->id,
                     "guest_login"=> true,
                     "max_users"=> 5,
