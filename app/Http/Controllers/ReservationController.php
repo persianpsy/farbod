@@ -51,7 +51,7 @@ class ReservationController extends BaseController
          $id = \App\Models\Staff::query()->where('user_id',$request->user()->id)->first()->id;
           return \App\Models\Reservation::with('appointment')->whereIn('status',[2,4,5,6])->whereHas('appointment',function ($q) use($id) {
               $q->where('staff_id' ,$id);
-            })->get();
+            })->paginate(30);
 
 
     }
