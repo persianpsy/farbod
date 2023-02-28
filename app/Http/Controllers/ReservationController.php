@@ -336,7 +336,7 @@ class ReservationController extends BaseController
         $response = $client->request('POST', $url, ['json' => [
                 "action"=> "createRoom",
                 "params"=>[
-                    "name"=>"schedule-".$appointment->id.rand(1,100),
+                    "name"=> $appointment->id,
                     "title"=> rand(1,10)."جلسه مشاوره رزرو شماره ". $reservation->id,
                     "guest_login"=> true,
                     "max_users"=> 5,
@@ -396,6 +396,16 @@ class ReservationController extends BaseController
     {
           $reservation = Reservation::where('id' , $request->id)->first();
 
+            $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('POST', $url, ['json' => [
+                "action"=> "deleteRoom",
+                "params"=>[
+                    "room_id"=>$reservation->room_id,
+                ]
+            ]
+            ]);
+            $content = json_decode($response->getBody());
             if($reservation->room_id){
                $reservation->room_id = NULL;
             }
@@ -407,17 +417,7 @@ class ReservationController extends BaseController
 
             $reservation->update();
 
-        $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
-        $client = new \GuzzleHttp\Client();
 
-        $response = $client->request('POST', $url, ['json' => [
-            "action"=> "deleteRoom",
-            "params"=>[
-                "room_id"=>$reservation->room_id,
-            ]
-        ]
-        ]);
-        $content = json_decode($response->getBody());
         if (!$content->ok){
             return response(['msg'=>$content->error_message],419);
         }
