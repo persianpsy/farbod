@@ -338,7 +338,7 @@ class ReservationController extends BaseController
         $response = $client->request('POST', $url, ['json' => [
                 "action"=> "createRoom",
                 "params"=>[
-                    "name"=> "schedule-".$appointment->id,
+                    "name"=> "schedule-".$reservation->id,
                     "title"=>  "schedule-".$reservation->id,
                     "guest_login"=> true,
                     "max_users"=> 5,
