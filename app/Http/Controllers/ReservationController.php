@@ -312,9 +312,9 @@ class ReservationController extends BaseController
         $client = new \GuzzleHttp\Client();
 
         $response = $client->request('POST', $url, ['json' => [
-            "action"=> $this->pattern,
+            "action"=> 'deleteRoom',
             "params"=>[
-                "room_id"=> $this->phone,
+                "room_id"=>  $data->room_id,
 
             ]
         ]
