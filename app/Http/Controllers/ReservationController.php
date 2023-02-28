@@ -305,6 +305,23 @@ class ReservationController extends BaseController
 
         $res = $this->SendAuthCode($data->user->cellphone,'vote','کاربر');
 
+        $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('POST', $url, ['json' => [
+            "action"=> "deleteRoom",
+            "params"=>[
+                "room_id"=>$data->room_id,
+
+            ]
+        ]
+        ]);
+        $content = json_decode($response->getBody());
+        if (!$content->ok){
+            return response(['msg'=>$content->error_message],419);
+        }
+
+
         return $this->handleResponse($wallet,'okay');
     }
 
@@ -390,7 +407,22 @@ class ReservationController extends BaseController
 
             $reservation->update();
 
-            return $reservation;
+        $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('POST', $url, ['json' => [
+            "action"=> "deleteRoom",
+            "params"=>[
+                "room_id"=>$reservation->room_id,
+            ]
+        ]
+        ]);
+        $content = json_decode($response->getBody());
+        if (!$content->ok){
+            return response(['msg'=>$content->error_message],419);
+        }
+
+        return $reservation;
 
     }
 
