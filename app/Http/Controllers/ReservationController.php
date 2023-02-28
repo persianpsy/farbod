@@ -276,7 +276,7 @@ class ReservationController extends BaseController
 
     public function closest(Request $request)
     {
-         $data =  Reservation::with(['appointment','user'])->where('appointment_id',$request->id)->first();
+         $data =  Reservation::with(['appointment','user'])->where('id',$request->id)->first();
 
         $data->status = ReservationStatus::FINISHED;
 
@@ -306,7 +306,7 @@ class ReservationController extends BaseController
 
         $data->save();
         dispatch(new smsReminder($data->user->cellphone, 'vote', 'کاربر'));
-
+       
 
         $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
         $client = new \GuzzleHttp\Client();
