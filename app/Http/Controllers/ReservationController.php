@@ -10,6 +10,7 @@ use App\Http\Requests\getInfoReservationRequest;
 use App\Http\Requests\SubmitReservationRequest;
 use App\Models\Appointment;
 use App\Jobs\closeRoom;
+use App\Jobs\smsReminder;
 use App\Models\Coupon;
 use App\Models\Reservation;
 use App\Http\Traits\SmsTrait;
