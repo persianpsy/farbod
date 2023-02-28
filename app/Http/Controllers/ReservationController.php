@@ -325,7 +325,7 @@ class ReservationController extends BaseController
                 "action"=> "createRoom",
                 "params"=>[
                     "name"=> "schedule-".$appointment->id,
-                    "title"=> rand(1,10)."جلسه مشاوره رزرو شماره ". $reservation->id,
+                    "title"=>  "schedule-".$reservation->id,
                     "guest_login"=> true,
                     "max_users"=> 5,
                     "session_duration"=>$reservation->appointment->staff->time_to_visit
