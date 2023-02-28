@@ -9,6 +9,7 @@ use App\Http\Requests\DiscountReservationRequest;
 use App\Http\Requests\getInfoReservationRequest;
 use App\Http\Requests\SubmitReservationRequest;
 use App\Models\Appointment;
+use App\Jobs\closeRoom;
 use App\Models\Coupon;
 use App\Models\Reservation;
 use App\Http\Traits\SmsTrait;
@@ -279,6 +280,7 @@ class ReservationController extends BaseController
         $data->status = ReservationStatus::FINISHED;
 
 
+
         ///  clean code ??!
         if($data->user->location == '1'){
 
@@ -302,24 +304,9 @@ class ReservationController extends BaseController
 
 
         $data->save();
+        dispatch(new smsReminder($data->user->cellphone, 'vote', 'کاربر'));
 
-        $res = $this->SendAuthCode($data->user->cellphone,'vote','کاربر');
-
-        $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
-        $client = new \GuzzleHttp\Client();
-
-        $response = $client->request('POST', $url, ['json' => [
-            "action"=> "deleteRoom",
-            "params"=>[
-                "room_id"=>$data->room_id,
-
-            ]
-        ]
-        ]);
-        $content = json_decode($response->getBody());
-        if (!$content->ok){
-            return response(['msg'=>$content->error_message],419);
-        }
+        dispatch(new closeRoom($data->room_id, 'deleteRoom'));
 
 
         return $this->handleResponse($wallet,'okay');
@@ -394,18 +381,10 @@ class ReservationController extends BaseController
 
     public function cleanRoom(Request $request)
     {
-          $reservation = Reservation::where('id' , $request->id)->first();
+           $reservation = Reservation::where('id' , $request->id)->first();
 
-            $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
-            $client = new \GuzzleHttp\Client();
-            $response = $client->request('POST', $url, ['json' => [
-                "action"=> "deleteRoom",
-                "params"=>[
-                    "room_id"=>$reservation->room_id,
-                ]
-            ]
-            ]);
-            $content = json_decode($response->getBody());
+            dispatch(new closeRoom($reservation->room_id, 'deleteRoom'));
+
             if($reservation->room_id){
                $reservation->room_id = NULL;
             }
@@ -418,11 +397,8 @@ class ReservationController extends BaseController
             $reservation->update();
 
 
-        if (!$content->ok){
-            return response(['msg'=>$content->error_message],419);
-        }
 
-        return $reservation;
+            return $reservation;
 
     }
 
