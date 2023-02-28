@@ -51,7 +51,7 @@ class closeRoom implements ShouldQueue
 
 
         } catch (\Exception $e) {
-//            Log::alert([$this->phone, $token, $e->getMessage(), $this->pattern]);
+         
         }
     }
 }

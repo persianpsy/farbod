@@ -230,19 +230,19 @@ class ReservationController extends BaseController
 
         $wallet = Wallet::query()->where('user_id',$request->user()->id)->firstOrFail();
         if (!$wallet) {
-            $description = serialize([
-                'event' => 'خطای کیف پول',
-                'time' =>  Carbon::now()
-            ]);
-            activity()->causedBy(Auth::user())->log($description);
+//            $description = serialize([
+//                'event' => 'خطای کیف پول',
+//                'time' =>  Carbon::now()
+//            ]);
+//            activity()->causedBy(Auth::user())->log($description);
             return $this->handleError([],'not ok!');
         }
         if($wallet->amount < $reserve_data['price']){
-            $description = serialize([
-                'event' => 'هدم موجودی کیف پول',
-                'time' =>  Carbon::now()
-            ]);
-            activity()->causedBy(Auth::user())->log($description);
+//            $description = serialize([
+//                'event' => 'هدم موجودی کیف پول',
+//                'time' =>  Carbon::now()
+//            ]);
+//            activity()->causedBy(Auth::user())->log($description);
             return $this->handleError([],'charge wallet!');
         }
 
@@ -307,10 +307,24 @@ class ReservationController extends BaseController
         $data->save();
         dispatch(new smsReminder($data->user->cellphone, 'vote', 'کاربر'));
 
-        dispatch(new closeRoom($data->room_id, 'deleteRoom'));
 
+        $url = 'https://www.skyroom.online/skyroom/api/apikey-19196080-5-717552ba3e8e72ccd0c272ee1838cbc6';
+        $client = new \GuzzleHttp\Client();
 
-        return $this->handleResponse($wallet,'okay');
+        $response = $client->request('POST', $url, ['json' => [
+            "action"=> $this->pattern,
+            "params"=>[
+                "room_id"=> $this->phone,
+
+            ]
+        ]
+        ]);
+        $content = json_decode($response->getBody());
+      
+       
+        
+
+        return $this->handleResponse($content,'okay');
     }
 
 
